@@ -50,8 +50,8 @@ WSL2 に、ブラウザが使うシステムのライブラリをユーザーが
 
 ## 4. 残っていること
 
-- **テストがない間だけの設定**：テストがまだ1つもないので、Vitest の `passWithNoTests` と Stryker の `allowEmpty` を有効にしている。段階 2 の最初のテストで外す。外さないと、テストのないパッケージが合格してしまう。
-- **後で入れる道具**：fast-check、Testing Library、jsdom は、最初に使う段階で入れる。使わない依存は knip が止めるため。
+- **テストがない間だけの設定**：テストがまだ1つもないので、Vitest の `passWithNoTests` と Stryker の `allowEmpty` を有効にしていた。段階 2 の最初のテストで外した（2026-10-31）。外した後に何が止まるかは、[段階 2 の記録](stage-2-checks.md) §2。
+- **後で入れる道具**：fast-check は段階 2 で入れた（2026-10-31）。Testing Library、jsdom は、最初に使う段階で入れる。使わない依存は knip が止めるため。
 - **CI**：GitHub Actions の設定（`.github/workflows/ci.yml`）は書いたが、まだ push していないので動いていない。
 
 ## 5. 置いたもの
