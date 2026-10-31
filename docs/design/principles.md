@@ -58,7 +58,7 @@
 |---|---|
 | `Clock` | 現在時刻（単調増加）の取得 |
 | `Scheduler` | 指定時間後の通知（タイマー） |
-| `Random` | シード指定可能な乱数 |
+| `Random` | シード指定可能な乱数。形と作り方は [ADR-0002](../adr/0002-randomness.md) |
 | `SettingsRepository` / `BoardRepository` など | 設定・盤面などの保存と読込（保存単位ごとに分ける） |
 | `CardFaceProvider` | 札面の描き方の提供 |
 | `ReportGateway` | 報告の送信 |
