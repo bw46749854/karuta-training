@@ -1,0 +1,12 @@
+# Fast checks before each commit (design principles §5). The heavy checks
+# run with `pnpm verify` and in CI.
+pre-commit:
+  jobs:
+    - name: format
+      glob: "*.{ts,tsx,js,mjs,json,yaml,yml,css,html}"
+      run: pnpm exec prettier --check {staged_files}
+    - name: lint
+      glob: "*.{ts,tsx,js,mjs}"
+      run: pnpm exec eslint {staged_files}
+    - name: typecheck
+      run: pnpm typecheck

@@ -14,6 +14,15 @@
 - remote の `karutaTraining` は、公開中のサンプルのリポジトリ。ここへは push しない。
 - 文書の一覧は [docs/README.md](docs/README.md)。
 
+## コマンド
+
+| コマンド | 内容 |
+|---|---|
+| `pnpm verify` | すべてのチェック（書式、lint、型、依存の向き、不要コード、単体テストとカバレッジ、ミューテーション、E2E、サイズ）。CI と同じ |
+| `pnpm check:fast` | 速いチェック（書式、lint、型）。コミット前にも自動で動く |
+| `pnpm test` | 単体テスト |
+| `pnpm e2e` | 組み立てと E2E |
+
 ## 読む文書
 
 | 文書 | 読むとき |

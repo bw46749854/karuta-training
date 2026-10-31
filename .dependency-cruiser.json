@@ -1,0 +1,75 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sverweij/dependency-cruiser/main/src/schema/configuration.schema.json",
+  "forbidden": [
+    {
+      "name": "no-circular",
+      "comment": "循環参照を禁止する（設計方針 §5）",
+      "severity": "error",
+      "from": {},
+      "to": { "circular": true }
+    },
+    {
+      "name": "not-to-unresolvable",
+      "comment": "解決できない import を禁止する",
+      "severity": "error",
+      "from": {},
+      "to": { "couldNotResolve": true }
+    },
+    {
+      "name": "domain-uses-nothing-outside",
+      "comment": "domain は標準ライブラリだけを使う。外部ライブラリも、ほかのパッケージも使わない（設計方針 §2.1）",
+      "severity": "error",
+      "from": { "path": "^packages/domain/", "pathNot": "[.]test[.]tsx?$" },
+      "to": { "pathNot": "^packages/domain/" }
+    },
+    {
+      "name": "application-uses-only-domain",
+      "comment": "application が使えるのは domain だけ（設計方針 §2.1）",
+      "severity": "error",
+      "from": {
+        "path": "^packages/application/",
+        "pathNot": "[.]test[.]tsx?$"
+      },
+      "to": { "pathNot": "^packages/(application|domain)/" }
+    },
+    {
+      "name": "adapters-not-to-ui",
+      "comment": "アダプタは ui を使わない（設計方針 §2.1）",
+      "severity": "error",
+      "from": { "path": "^packages/adapters-" },
+      "to": { "path": "^packages/ui/" }
+    },
+    {
+      "name": "ui-not-to-adapters",
+      "comment": "ui はアダプタを使わない。組み立ては apps で行う（設計方針 §2.1）",
+      "severity": "error",
+      "from": { "path": "^packages/ui/" },
+      "to": { "path": "^packages/adapters-" }
+    },
+    {
+      "name": "ui-to-domain-types-only",
+      "comment": "ui から domain へは型だけを参照する。ルールの計算は application を通す（設計方針 §2.1）",
+      "severity": "error",
+      "from": { "path": "^packages/ui/" },
+      "to": { "path": "^packages/domain/", "dependencyTypesNot": ["type-only"] }
+    },
+    {
+      "name": "packages-not-to-apps",
+      "comment": "パッケージは apps を使わない。依存は内側に向ける（設計方針 §2.1）",
+      "severity": "error",
+      "from": { "path": "^packages/" },
+      "to": { "path": "^apps/" }
+    }
+  ],
+  "options": {
+    "doNotFollow": { "path": "node_modules" },
+    "exclude": { "path": "^(packages|apps)/[^/]+/(dist|dist-types|coverage)/" },
+    "tsPreCompilationDeps": true,
+    "tsConfig": { "fileName": "tsconfig.base.json" },
+    "enhancedResolveOptions": {
+      "exportsFields": ["exports"],
+      "conditionNames": ["import", "require", "node", "default", "types"],
+      "extensions": [".ts", ".tsx", ".js", ".mjs", ".d.ts"]
+    }
+  }
+}

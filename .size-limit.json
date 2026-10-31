@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Web 版の JavaScript（gzip）",
+    "path": "apps/web/dist/assets/*.js",
+    "gzip": true,
+    "limit": "100 kB"
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "name": "karuta-training",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.16.1",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "prepare": "lefthook install",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "typecheck": "tsc -b",
+    "deps": "depcruise packages apps",
+    "knip": "knip",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "mutation": "stryker run",
+    "build": "pnpm --filter @karuta/web build",
+    "size": "size-limit",
+    "e2e": "pnpm --filter @karuta/web e2e",
+    "check:fast": "pnpm format:check && pnpm lint && pnpm typecheck",
+    "verify": "pnpm check:fast && pnpm deps && pnpm knip && pnpm test:coverage && pnpm mutation && pnpm e2e && pnpm size"
+  },
+  "devDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "4.8.1",
+    "@eslint/js": "10.0.1",
+    "@size-limit/file": "14.3.0",
+    "@stryker-mutator/core": "10.1.1",
+    "@stryker-mutator/vitest-runner": "10.1.1",
+    "@types/node": "24.19.2",
+    "@vitest/coverage-v8": "5.0.5",
+    "dependency-cruiser": "18.7.0",
+    "eslint": "10.13.0",
+    "knip": "6.43.0",
+    "lefthook": "2.2.2",
+    "prettier": "3.9.10",
+    "size-limit": "14.3.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vitest": "5.0.5"
+  }
+}

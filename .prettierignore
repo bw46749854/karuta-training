@@ -1,0 +1,10 @@
+# Documents are hand-formatted Japanese prose and tables.
+*.md
+pnpm-lock.yaml
+dist/
+dist-types/
+coverage/
+reports/
+.stryker-tmp/
+test-results/
+playwright-report/

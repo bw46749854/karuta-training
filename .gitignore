@@ -1,0 +1,9 @@
+node_modules/
+dist/
+dist-types/
+coverage/
+reports/
+.stryker-tmp/
+test-results/
+playwright-report/
+*.tsbuildinfo
