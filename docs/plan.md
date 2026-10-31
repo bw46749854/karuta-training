@@ -46,6 +46,8 @@
 
 **完了条件**：設計方針・仕様 01・全体計画・開発の進め方が承認されている。`CLAUDE.md` がある。
 
+**状態**：完了（2026-10-31、ユーザー確認済み）
+
 ### 段階 1：土台
 
 - プロジェクトの骨組み：pnpm のワークスペースで、`packages/domain`・`packages/application`・`packages/adapters-web`・`packages/ui`・`apps/web` を作る（設計方針 §2.1）。
