@@ -1,0 +1,13 @@
+{
+  "id": "static-kimariji/distribution",
+  "description": "静的決まり字の文字数ごとの首数。1字決まりは「むすめふさほせ」の7首（仕様 01 §4.2）",
+  "distribution": [
+    { "length": 1, "poems": 7 },
+    { "length": 2, "poems": 42 },
+    { "length": 3, "poems": 37 },
+    { "length": 4, "poems": 6 },
+    { "length": 5, "poems": 2 },
+    { "length": 6, "poems": 6 }
+  ],
+  "oneCharacterKimariji": ["む", "す", "め", "ふ", "さ", "ほ", "せ"]
+}
