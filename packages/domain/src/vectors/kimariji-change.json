@@ -1,0 +1,79 @@
+[
+  {
+    "id": "kimariji-change/nothing-read-uka-stays-uka",
+    "description": "何も読まれていなければ「うか」（74番）は「うか」",
+    "read": [],
+    "poem": 74,
+    "expectedKimariji": "うか"
+  },
+  {
+    "id": "kimariji-change/ura-read-uka-becomes-u",
+    "description": "「うら」が読まれると「うか」は一字決まりになる",
+    "read": [65],
+    "poem": 74,
+    "expectedKimariji": "う"
+  },
+  {
+    "id": "kimariji-change/nothing-read-tsuku-stays-tsuku",
+    "description": "何も読まれていなければ「つく」（13番）は「つく」",
+    "read": [],
+    "poem": 13,
+    "expectedKimariji": "つく"
+  },
+  {
+    "id": "kimariji-change/tsuki-read-tsuku-becomes-tsu",
+    "description": "「つき」（23番）が読まれると「つく」（13番）は「つ」になる",
+    "read": [23],
+    "poem": 13,
+    "expectedKimariji": "つ"
+  },
+  {
+    "id": "kimariji-change/nothing-read-chigirio-stays-chigirio",
+    "description": "何も読まれていなければ「ちぎりお」（75番）は「ちぎりお」",
+    "read": [],
+    "poem": 75,
+    "expectedKimariji": "ちぎりお"
+  },
+  {
+    "id": "kimariji-change/chigiriki-read-chigirio-becomes-chigi",
+    "description": "「ちぎりき」（42番）が読まれると「ちぎりお」（75番）は「ちぎ」になる",
+    "read": [42],
+    "poem": 75,
+    "expectedKimariji": "ちぎ"
+  },
+  {
+    "id": "kimariji-change/nothing-read-asaborakea-stays-asaborakea",
+    "description": "何も読まれていなければ「あさぼらけあ」（31番）は「あさぼらけあ」",
+    "read": [],
+    "poem": 31,
+    "expectedKimariji": "あさぼらけあ"
+  },
+  {
+    "id": "kimariji-change/asaborakeu-read-asaborakea-becomes-asabo",
+    "description": "「あさぼらけう」（64番）が読まれると「あさぼらけあ」（31番）は「あさぼ」になる",
+    "read": [64],
+    "poem": 31,
+    "expectedKimariji": "あさぼ"
+  },
+  {
+    "id": "kimariji-change/asaborakeu-and-asaji-read-asaborakea-becomes-asa",
+    "description": "「あさぼらけう」（64番）と「あさじ」（39番）が読まれると「あさぼらけあ」（31番）は「あさ」になる",
+    "read": [64, 39],
+    "poem": 31,
+    "expectedKimariji": "あさ"
+  },
+  {
+    "id": "kimariji-change/nothing-read-kimigatameo-stays-kimigatameo",
+    "description": "何も読まれていなければ「きみがためお」（50番）は「きみがためお」",
+    "read": [],
+    "poem": 50,
+    "expectedKimariji": "きみがためお"
+  },
+  {
+    "id": "kimariji-change/kimigatameha-read-kimigatameo-becomes-kimi",
+    "description": "「きみがためは」（15番）が読まれると「きみがためお」（50番）は「きみ」になる。6字決まりが一気に2字決まりになる",
+    "read": [15],
+    "poem": 50,
+    "expectedKimariji": "きみ"
+  }
+]

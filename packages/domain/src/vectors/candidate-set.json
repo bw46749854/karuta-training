@@ -1,0 +1,93 @@
+[
+  {
+    "id": "candidate-set/ha-four/nothing-read/hanasa",
+    "description": "「は」の4首：既読なしなら「はなさ」（96番）は「はなさ」",
+    "read": [],
+    "poem": 96,
+    "expectedKimariji": "はなさ"
+  },
+  {
+    "id": "candidate-set/ha-four/nothing-read/hanano",
+    "description": "「は」の4首：既読なしなら「はなの」（9番）は「はなの」",
+    "read": [],
+    "poem": 9,
+    "expectedKimariji": "はなの"
+  },
+  {
+    "id": "candidate-set/ha-four/nothing-read/harusu",
+    "description": "「は」の4首：既読なしなら「はるす」（2番）は「はるす」",
+    "read": [],
+    "poem": 2,
+    "expectedKimariji": "はるす"
+  },
+  {
+    "id": "candidate-set/ha-four/nothing-read/haruno",
+    "description": "「は」の4首：既読なしなら「はるの」（67番）は「はるの」",
+    "read": [],
+    "poem": 67,
+    "expectedKimariji": "はるの"
+  },
+  {
+    "id": "candidate-set/ha-four/hanasa-read/hanano",
+    "description": "「は」の4首：「はなさ」が既読なら「はなの」は「はな」",
+    "read": [96],
+    "poem": 9,
+    "expectedKimariji": "はな"
+  },
+  {
+    "id": "candidate-set/ha-four/hanasa-read/harusu",
+    "description": "「は」の4首：「はなさ」が既読なら「はるす」は「はるす」",
+    "read": [96],
+    "poem": 2,
+    "expectedKimariji": "はるす"
+  },
+  {
+    "id": "candidate-set/ha-four/hanasa-read/haruno",
+    "description": "「は」の4首：「はなさ」が既読なら「はるの」は「はるの」",
+    "read": [96],
+    "poem": 67,
+    "expectedKimariji": "はるの"
+  },
+  {
+    "id": "candidate-set/ha-four/hanasa-harusu-read/hanano",
+    "description": "「は」の4首：「はなさ」「はるす」が既読なら「はなの」は「はな」",
+    "read": [96, 2],
+    "poem": 9,
+    "expectedKimariji": "はな"
+  },
+  {
+    "id": "candidate-set/ha-four/hanasa-harusu-read/haruno",
+    "description": "「は」の4首：「はなさ」「はるす」が既読なら「はるの」は「はる」",
+    "read": [96, 2],
+    "poem": 67,
+    "expectedKimariji": "はる"
+  },
+  {
+    "id": "candidate-set/ha-four/hanasa-harusu-haruno-read/hanano",
+    "description": "「は」の4首：「はなさ」「はるす」「はるの」が既読なら「はなの」は「は」",
+    "read": [96, 2, 67],
+    "poem": 9,
+    "expectedKimariji": "は"
+  },
+  {
+    "id": "candidate-set/hanasa-harusu-selected/nothing-read/hanasa",
+    "description": "「はなさ」「はるす」だけを選んだ場合：既読なしなら「はなさ」は「はなさ」",
+    "read": [],
+    "poem": 96,
+    "expectedKimariji": "はなさ"
+  },
+  {
+    "id": "candidate-set/hanasa-harusu-selected/nothing-read/harusu",
+    "description": "「はなさ」「はるす」だけを選んだ場合：既読なしなら「はるす」は「はるす」",
+    "read": [],
+    "poem": 2,
+    "expectedKimariji": "はるす"
+  },
+  {
+    "id": "candidate-set/hanasa-harusu-selected/hanasa-read/harusu",
+    "description": "「はなさ」「はるす」だけを選んだ場合：「はなさ」が既読でも、選んでいない「はなの」「はるの」は候補に残るので「はるす」は「はるす」",
+    "read": [96],
+    "poem": 2,
+    "expectedKimariji": "はるす"
+  }
+]
