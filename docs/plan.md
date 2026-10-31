@@ -65,7 +65,7 @@
 
 `packages/domain` に、競技ルールを作る。どれも先にテストを書く。
 
-最初のテストを入れたら、テストがないときに通す設定（Vitest の `passWithNoTests`、Stryker の `allowEmpty`）を外す（[段階 1 の記録](records/stage-1-checks.md) §3）。
+最初のテストを入れたら、テストがないときに通す設定（Vitest の `passWithNoTests`、Stryker の `allowEmpty`）を外す（[段階 1 の記録](records/stage-1-checks.md) §4）。
 
 - 歌のマスターデータ（読み・静的決まり字・決まり字グループ）と、データどうしの食い違いのテスト（仕様 01 §7、§8.3）
 - 決まり字変化と候補集合の計算（仕様 01 §4〜§6）
