@@ -1,0 +1,100 @@
+[
+  {
+    "description": "む・す に「む、す」は正解",
+    "cards": [87, 18],
+    "input": "む、す",
+    "romajiAllowed": false,
+    "expected": { "kind": "judged", "correct": true, "cards": [true, true] }
+  },
+  {
+    "description": "答える順番は問わない",
+    "cards": [87, 18],
+    "input": "す、む",
+    "romajiAllowed": false,
+    "expected": { "kind": "judged", "correct": true, "cards": [true, true] }
+  },
+  {
+    "description": "末尾に区切りがあってもよい",
+    "cards": [87, 18],
+    "input": "む、す、",
+    "romajiAllowed": false,
+    "expected": { "kind": "judged", "correct": true, "cards": [true, true] }
+  },
+  {
+    "description": "ローマ字入力 ON の「mu su」は正解（B-03）",
+    "cards": [87, 18],
+    "input": "mu su",
+    "romajiAllowed": true,
+    "expected": { "kind": "judged", "correct": true, "cards": [true, true] }
+  },
+  {
+    "description": "ローマ字入力 OFF の「mu su」は不正解（B-03）",
+    "cards": [87, 18],
+    "input": "mu su",
+    "romajiAllowed": false,
+    "expected": { "kind": "judged", "correct": false, "cards": [false, false] }
+  },
+  {
+    "description": "同じ答えが2回なら不正解",
+    "cards": [87, 18],
+    "input": "む、む",
+    "romajiAllowed": false,
+    "expected": { "kind": "judged", "correct": false, "cards": [true, false] }
+  },
+  {
+    "description": "合っていない答えがあれば不正解",
+    "cards": [87, 18],
+    "input": "む、あ",
+    "romajiAllowed": false,
+    "expected": { "kind": "judged", "correct": false, "cards": [true, false] }
+  },
+  {
+    "description": "答えが足りなければ、答えのなかった札は不正解",
+    "cards": [87, 18],
+    "input": "む",
+    "romajiAllowed": false,
+    "expected": { "kind": "judged", "correct": false, "cards": [true, false] }
+  },
+  {
+    "description": "かなに直せない答えも答えの数に数え、合っていない答えとする",
+    "cards": [87, 18],
+    "input": "む、ム",
+    "romajiAllowed": false,
+    "expected": { "kind": "judged", "correct": false, "cards": [true, false] }
+  },
+  {
+    "description": "答えが札の枚数より多ければ受け付けない",
+    "cards": [87, 18],
+    "input": "む、す、め",
+    "romajiAllowed": false,
+    "expected": { "kind": "not-accepted", "reason": "too-many" }
+  },
+  {
+    "description": "区切りだけなら受け付けない",
+    "cards": [87, 18],
+    "input": "、 、",
+    "romajiAllowed": false,
+    "expected": { "kind": "not-accepted", "reason": "separators-only" }
+  },
+  {
+    "description": "何も入力しなければ受け付けない（B-25）",
+    "cards": [87, 18],
+    "input": "",
+    "romajiAllowed": false,
+    "expected": { "kind": "not-accepted", "reason": "empty" }
+  },
+  {
+    "description": "最後の1枚の問：末尾に区切りがあってもよい",
+    "cards": [87],
+    "input": "む、",
+    "romajiAllowed": false,
+    "expected": { "kind": "judged", "correct": true, "cards": [true] }
+  },
+  {
+    "description": "最後の1枚の問：答えが2つなら受け付けない",
+    "cards": [87],
+    "input": "む、す",
+    "romajiAllowed": false,
+    "expected": { "kind": "not-accepted", "reason": "too-many" }
+  }
+]

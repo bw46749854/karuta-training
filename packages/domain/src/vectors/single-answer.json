@@ -1,0 +1,143 @@
+[
+  {
+    "description": "「む」は正解",
+    "poem": 87,
+    "read": [],
+    "input": "む",
+    "romajiAllowed": false,
+    "expected": "correct"
+  },
+  {
+    "description": "前に空白があれば不正解",
+    "poem": 87,
+    "read": [],
+    "input": " む",
+    "romajiAllowed": false,
+    "expected": "wrong"
+  },
+  {
+    "description": "後ろに空白があれば不正解",
+    "poem": 87,
+    "read": [],
+    "input": "む ",
+    "romajiAllowed": false,
+    "expected": "wrong"
+  },
+  {
+    "description": "後ろに全角の空白があれば不正解",
+    "poem": 87,
+    "read": [],
+    "input": "む　",
+    "romajiAllowed": false,
+    "expected": "wrong"
+  },
+  {
+    "description": "後ろに読点があれば不正解",
+    "poem": 87,
+    "read": [],
+    "input": "む、",
+    "romajiAllowed": false,
+    "expected": "wrong"
+  },
+  {
+    "description": "後ろにカンマがあれば不正解",
+    "poem": 87,
+    "read": [],
+    "input": "む,",
+    "romajiAllowed": false,
+    "expected": "wrong"
+  },
+  {
+    "description": "ローマ字入力 ON の「mu」は正解",
+    "poem": 87,
+    "read": [],
+    "input": "mu",
+    "romajiAllowed": true,
+    "expected": "correct"
+  },
+  {
+    "description": "ローマ字入力 ON の「MU」は正解",
+    "poem": 87,
+    "read": [],
+    "input": "MU",
+    "romajiAllowed": true,
+    "expected": "correct"
+  },
+  {
+    "description": "ローマ字入力 OFF の「mu」は不正解",
+    "poem": 87,
+    "read": [],
+    "input": "mu",
+    "romajiAllowed": false,
+    "expected": "wrong",
+    "reason": "romaji-not-allowed"
+  },
+  {
+    "description": "前に空白のあるローマ字は不正解",
+    "poem": 87,
+    "read": [],
+    "input": " mu",
+    "romajiAllowed": true,
+    "expected": "wrong",
+    "reason": "romaji-unconvertible"
+  },
+  {
+    "description": "空白だけの入力は不正解",
+    "poem": 87,
+    "read": [],
+    "input": " ",
+    "romajiAllowed": true,
+    "expected": "wrong",
+    "reason": "not-kana-or-romaji"
+  },
+  {
+    "description": "カタカナは不正解（B-22）",
+    "poem": 87,
+    "read": [],
+    "input": "ム",
+    "romajiAllowed": true,
+    "expected": "wrong",
+    "reason": "not-kana-or-romaji"
+  },
+  {
+    "description": "かなとローマ字の混在は不正解",
+    "poem": 74,
+    "read": [],
+    "input": "うka",
+    "romajiAllowed": true,
+    "expected": "wrong",
+    "reason": "mixed"
+  },
+  {
+    "description": "何も入力しなければ受け付けない（B-25）",
+    "poem": 87,
+    "read": [],
+    "input": "",
+    "romajiAllowed": true,
+    "expected": "not-accepted"
+  },
+  {
+    "description": "途中に空白のある「う か」は不正解",
+    "poem": 74,
+    "read": [],
+    "input": "う か",
+    "romajiAllowed": false,
+    "expected": "wrong"
+  },
+  {
+    "description": "「うら」が既読なら「うか」の札は「う」が正解",
+    "poem": 74,
+    "read": [65],
+    "input": "う",
+    "romajiAllowed": false,
+    "expected": "correct"
+  },
+  {
+    "description": "「うら」が既読なら「うか」の札に「うか」は不正解",
+    "poem": 74,
+    "read": [65],
+    "input": "うか",
+    "romajiAllowed": false,
+    "expected": "wrong"
+  }
+]

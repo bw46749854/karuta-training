@@ -1,0 +1,29 @@
+[
+  { "input": "む", "expected": { "kind": "answers", "answers": ["む"] } },
+  { "input": " む ", "expected": { "kind": "answers", "answers": ["む"] } },
+  { "input": "む、", "expected": { "kind": "answers", "answers": ["む"] } },
+  {
+    "input": "ima,,naniwae,tiha,",
+    "expected": { "kind": "answers", "answers": ["ima", "naniwae", "tiha"] }
+  },
+  {
+    "input": "む、す，め　ふ さ",
+    "expected": { "kind": "answers", "answers": ["む", "す", "め", "ふ", "さ"] }
+  },
+  {
+    "input": "う か",
+    "expected": { "kind": "answers", "answers": ["う", "か"] }
+  },
+  {
+    "input": "ka ze wo",
+    "expected": { "kind": "answers", "answers": ["ka", "ze", "wo"] }
+  },
+  {
+    "input": "む\t、\tす",
+    "expected": { "kind": "answers", "answers": ["む", "す"] }
+  },
+  { "input": "", "expected": { "kind": "empty" } },
+  { "input": "、、", "expected": { "kind": "separators-only" } },
+  { "input": "　 ", "expected": { "kind": "separators-only" } },
+  { "input": " , ", "expected": { "kind": "separators-only" } }
+]

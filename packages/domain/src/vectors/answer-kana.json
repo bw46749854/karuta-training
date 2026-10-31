@@ -1,0 +1,172 @@
+[
+  {
+    "answer": "む",
+    "romajiAllowed": false,
+    "expected": { "kind": "kana", "kana": "む" }
+  },
+  {
+    "answer": "mu",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "む" }
+  },
+  {
+    "answer": "mu",
+    "romajiAllowed": false,
+    "expected": { "kind": "unconvertible", "reason": "romaji-not-allowed" }
+  },
+  {
+    "answer": "MU",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "む" }
+  },
+  {
+    "answer": "kazewo",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "かぜを" }
+  },
+  {
+    "answer": "imaha",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "いまは" }
+  },
+  {
+    "answer": "ooko",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "おおこ" }
+  },
+  {
+    "answer": "ouko",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "おうこ" }
+  },
+  {
+    "answer": "shino",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "しの" }
+  },
+  {
+    "answer": "sino",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "しの" }
+  },
+  {
+    "answer": "chiha",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "ちは" }
+  },
+  {
+    "answer": "tiha",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "ちは" }
+  },
+  {
+    "answer": "tsuki",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "つき" }
+  },
+  {
+    "answer": "tuki",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "つき" }
+  },
+  {
+    "answer": "fu",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "ふ" }
+  },
+  {
+    "answer": "hu",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "ふ" }
+  },
+  {
+    "answer": "asaji",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "あさじ" }
+  },
+  {
+    "answer": "asazi",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "あさじ" }
+  },
+  {
+    "answer": "naniwaye",
+    "romajiAllowed": true,
+    "expected": { "kind": "kana", "kana": "なにわえ" }
+  },
+  {
+    "answer": "はなサ",
+    "romajiAllowed": false,
+    "expected": { "kind": "kana", "kana": "はなサ" }
+  },
+  {
+    "answer": "うka",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "mixed" }
+  },
+  {
+    "answer": "うka",
+    "romajiAllowed": false,
+    "expected": { "kind": "unconvertible", "reason": "mixed" }
+  },
+  {
+    "answer": "n",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "romaji-unconvertible" }
+  },
+  {
+    "answer": "kka",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "romaji-unconvertible" }
+  },
+  {
+    "answer": "kya",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "romaji-unconvertible" }
+  },
+  {
+    "answer": "mu1",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "romaji-unconvertible" }
+  },
+  {
+    "answer": " mu",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "romaji-unconvertible" }
+  },
+  {
+    "answer": "ｍｕ",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "not-kana-or-romaji" }
+  },
+  {
+    "answer": "ム",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "not-kana-or-romaji" }
+  },
+  {
+    "answer": "ム",
+    "romajiAllowed": false,
+    "expected": { "kind": "unconvertible", "reason": "not-kana-or-romaji" }
+  },
+  {
+    "answer": "無",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "not-kana-or-romaji" }
+  },
+  {
+    "answer": "1",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "not-kana-or-romaji" }
+  },
+  {
+    "answer": "！",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "not-kana-or-romaji" }
+  },
+  {
+    "answer": " ",
+    "romajiAllowed": true,
+    "expected": { "kind": "unconvertible", "reason": "not-kana-or-romaji" }
+  }
+]
