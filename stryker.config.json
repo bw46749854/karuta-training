@@ -18,6 +18,5 @@
   "htmlReporter": {
     "fileName": "reports/mutation/index.html"
   },
-  "tempDirName": ".stryker-tmp",
-  "allowEmpty": true
+  "tempDirName": ".stryker-tmp"
 }
