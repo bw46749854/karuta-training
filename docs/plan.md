@@ -94,7 +94,7 @@
 
 あわせて、決めた内容に沿って `application` の骨組み（ポートの定義、進行の実行器）と、`ui` の共通の枠（トップに戻るボタンなど、取扱説明書 §8.1）を作る。
 
-**状態**：作業中。済み：設定値の管理（[ADR-0003](adr/0003-settings.md)）、練習モードの共通の契約（[ADR-0004](adr/0004-practice-mode-contract.md)）、文言の管理（[ADR-0005](adr/0005-wording.md)）、画面に表示する情報（[ADR-0006](adr/0006-what-screens-show.md)）、機器・画面の大きさ（[ADR-0007](adr/0007-devices-and-screen-sizes.md)）（2026-11-01）。ADR はすべて承認済み。残り：ADR-0007 に合わせた仕様 03 §6 と盤面のコードの直し、`application` の骨組み、`ui` の共通の枠。
+**状態**：作業中。済み：設定値の管理（[ADR-0003](adr/0003-settings.md)）、練習モードの共通の契約（[ADR-0004](adr/0004-practice-mode-contract.md)）、文言の管理（[ADR-0005](adr/0005-wording.md)）、画面に表示する情報（[ADR-0006](adr/0006-what-screens-show.md)）、機器・画面の大きさ（[ADR-0007](adr/0007-devices-and-screen-sizes.md)）（2026-11-01）。ADR はすべて承認済み。ADR-0007 に合わせた仕様 03 §6 と盤面のコードの直しも済み（記録は [段階 3 の記録](records/stage-3-checks.md)）。残り：`application` の骨組み、`ui` の共通の枠。
 
 **完了条件**：各 ADR が承認されている。骨組みに、設計方針どおりのテストがある。
 
