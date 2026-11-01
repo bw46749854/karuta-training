@@ -1,6 +1,15 @@
 export type { AnswerKana, UnconvertibleReason } from "./answer-kana";
-export { deal, poemsOnBoard, type Board, type Layout } from "./board";
+export {
+  BOARD_SHAPES,
+  boardShape,
+  deal,
+  poemsOnBoard,
+  type Board,
+  type BoardShape,
+  type Layout,
+} from "./board";
 export { CandidateSet } from "./candidate-set";
+export { defaultLayout } from "./default-layouts";
 export {
   multipleCardQuestions,
   singleCardQuestions,

@@ -1,42 +1,72 @@
 import fc from "fast-check";
 import { expect, test } from "vitest";
-import { deal, poemsOnBoard, type Board, type Layout } from "./board";
+import {
+  BOARD_SHAPES,
+  boardShape,
+  deal,
+  poemsOnBoard,
+  type Board,
+  type BoardShape,
+  type Layout,
+} from "./board";
 import { POEMS } from "./poems";
 import { firstChoice, randomFrom } from "./test-support/random";
 import vectors from "./vectors/dealing.json" with { type: "json" };
 
 const ALL = POEMS.map((poem) => poem.id);
-const COLUMNS = 11;
 
-// Spec 03 §6.3: the order in which each side is filled.
-const OPPONENT_ORDER = Array.from({ length: 33 }, (_, index) => index);
-const OWN_ORDER = Array.from({ length: 33 }, (_, index) => 65 - index);
-
-function layoutOf(rows: readonly string[]): boolean[] {
-  return Array.from(rows.join(""), (cell) => cell !== "・");
+function layoutOf(rows: readonly string[]): Layout {
+  const columns = Array.from(rows[0] ?? "").length;
+  return {
+    shape: boardShape(rows.length, columns),
+    used: Array.from(rows.join(""), (cell) => cell !== "・"),
+  };
 }
 
 function patternOf(board: Board, layout: Layout): string[] {
-  const cells = board.map((poem, index) => {
-    if (layout[index] !== true) {
+  const { rows, columns } = board.shape;
+  const cells = board.cells.map((poem, index) => {
+    if (layout.used[index] !== true) {
       return "・";
     }
     return poem === null ? "○" : "■";
   });
-  return Array.from({ length: 6 }, (_, row) =>
-    cells.slice(row * COLUMNS, (row + 1) * COLUMNS).join(""),
+  return Array.from({ length: rows }, (_, row) =>
+    cells.slice(row * columns, (row + 1) * columns).join(""),
   );
 }
 
-function usedIn(layout: Layout, order: readonly number[]): number[] {
-  return order.filter((index) => layout[index] === true);
+// Spec 03 §6.3: the order in which each side is filled.
+function fillOrders(shape: BoardShape): { opponent: number[]; own: number[] } {
+  const half = (shape.rows / 2) * shape.columns;
+  return {
+    opponent: Array.from({ length: half }, (_, index) => index),
+    own: Array.from({ length: half }, (_, index) => 2 * half - 1 - index),
+  };
 }
 
-const dealing = fc.record({
-  layout: fc.array(fc.boolean(), { minLength: 66, maxLength: 66 }),
-  targets: fc.shuffledSubarray(ALL),
-  values: fc.array(fc.nat()),
-});
+function usedIn(layout: Layout, order: readonly number[]): number[] {
+  return order.filter((index) => layout.used[index] === true);
+}
+
+const dealing = fc
+  .record({
+    shape: fc.constantFrom(...BOARD_SHAPES),
+    targets: fc.shuffledSubarray(ALL),
+    values: fc.array(fc.nat()),
+  })
+  .chain(({ shape, targets, values }) =>
+    fc.record({
+      layout: fc
+        .array(fc.boolean(), {
+          minLength: shape.rows * shape.columns,
+          maxLength: shape.rows * shape.columns,
+        })
+        .map((used): Layout => ({ shape, used })),
+      targets: fc.constant(targets),
+      values: fc.constant(values),
+    }),
+  );
 
 test.each(vectors)(
   "仕様 03 §6 $description",
@@ -44,6 +74,7 @@ test.each(vectors)(
     const used = layoutOf(layout);
     for (const random of [firstChoice, randomFrom([5, 3, 8, 1])]) {
       const board = deal(ALL.slice(0, targetCount), used, random);
+      expect(board.shape).toEqual(used.shape);
       expect(patternOf(board, used)).toEqual(expected);
     }
   },
@@ -54,8 +85,8 @@ test("仕様 03 §9.2 D1 配った札は対象の中にあり、重複しない�
     fc.property(dealing, ({ layout, targets, values }) => {
       const board = deal(targets, layout, randomFrom(values));
       const poems = poemsOnBoard(board);
-      const used = layout.filter(Boolean).length;
-      expect(board).toHaveLength(66);
+      const used = layout.used.filter(Boolean).length;
+      expect(board.cells).toHaveLength(layout.used.length);
       expect(poems).toHaveLength(Math.min(used, targets.length));
       expect(new Set(poems).size).toBe(poems.length);
       expect(poems.every((poem) => targets.includes(poem))).toBe(true);
@@ -67,12 +98,15 @@ test("仕様 03 §9.2 D2 札は使うマスにだけ置き、各陣で §6.3 の
   fc.assert(
     fc.property(dealing, ({ layout, targets, values }) => {
       const board = deal(targets, layout, randomFrom(values));
-      const misplaced = board.filter(
-        (poem, index) => poem !== null && !layout[index],
+      const misplaced = board.cells.filter(
+        (poem, index) => poem !== null && layout.used[index] !== true,
       );
       expect(misplaced).toEqual([]);
-      for (const order of [OPPONENT_ORDER, OWN_ORDER]) {
-        const filled = usedIn(layout, order).map((i) => board[i] !== null);
+      const { opponent, own } = fillOrders(layout.shape);
+      for (const order of [opponent, own]) {
+        const filled = usedIn(layout, order).map(
+          (index) => board.cells[index] !== null,
+        );
         expect(filled).toEqual(
           filled.toSorted((a, b) => Number(b) - Number(a)),
         );
@@ -85,11 +119,14 @@ test("仕様 03 §9.2 D3 相手陣の札は min(T, max(⌊n/2⌋, n − B)) 枚�
   fc.assert(
     fc.property(dealing, ({ layout, targets, values }) => {
       const board = deal(targets, layout, randomFrom(values));
-      const t = usedIn(layout, OPPONENT_ORDER).length;
-      const b = usedIn(layout, OWN_ORDER).length;
+      const { opponent, own } = fillOrders(layout.shape);
+      const t = usedIn(layout, opponent).length;
+      const b = usedIn(layout, own).length;
       const n = poemsOnBoard(board).length;
-      const opponent = board.slice(0, 33).filter((poem) => poem !== null);
-      expect(opponent).toHaveLength(
+      const onOpponentSide = opponent.filter(
+        (index) => board.cells[index] !== null,
+      );
+      expect(onOpponentSide).toHaveLength(
         Math.min(t, Math.max(Math.floor(n / 2), n - b)),
       );
     }),
