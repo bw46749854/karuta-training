@@ -245,7 +245,11 @@ importers:
 
   packages/adapters-web: {}
 
-  packages/application: {}
+  packages/application:
+    dependencies:
+      '@karuta/domain':
+        specifier: workspace:*
+        version: link:../domain
 
   packages/domain:
     devDependencies:
