@@ -1,0 +1,16 @@
+[
+  {
+    "description": "対象 5首のうち 3首が場にある、空札を除外する ON → 場にある 3首",
+    "targets": [87, 18, 57, 22, 70],
+    "onBoard": [87, 18, 57],
+    "excludeDead": true,
+    "expected": [87, 18, 57]
+  },
+  {
+    "description": "同上、空札を除外する OFF → 5首",
+    "targets": [87, 18, 57, 22, 70],
+    "onBoard": [87, 18, 57],
+    "excludeDead": false,
+    "expected": [87, 18, 57, 22, 70]
+  }
+]

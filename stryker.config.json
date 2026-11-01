@@ -7,7 +7,8 @@
   },
   "mutate": [
     "packages/domain/src/**/*.ts",
-    "!packages/domain/src/**/*.test.ts"
+    "!packages/domain/src/**/*.test.ts",
+    "!packages/domain/src/test-support/**"
   ],
   "thresholds": {
     "high": 90,

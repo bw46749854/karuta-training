@@ -1,0 +1,32 @@
+{
+  "single": [
+    {
+      "description": "出題枚数 4、対象 2首 → 2枚",
+      "targetCount": 2,
+      "count": 4,
+      "expectedCards": 2
+    },
+    {
+      "description": "出題枚数 4、対象 6首 → 4枚",
+      "targetCount": 6,
+      "count": 4,
+      "expectedCards": 4
+    }
+  ],
+  "multiple": [
+    {
+      "description": "出題枚数 6、同時枚数 5、対象 100首 → 5枚の問、1枚の問",
+      "targetCount": 100,
+      "count": 6,
+      "perQuestion": 5,
+      "expectedSizes": [5, 1]
+    },
+    {
+      "description": "出題枚数 4、同時枚数 2、対象 3首 → 2枚の問、1枚の問",
+      "targetCount": 3,
+      "count": 4,
+      "perQuestion": 2,
+      "expectedSizes": [2, 1]
+    }
+  ]
+}

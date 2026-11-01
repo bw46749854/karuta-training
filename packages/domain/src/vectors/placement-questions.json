@@ -1,0 +1,58 @@
+[
+  {
+    "description": "対象 あさじ、グループ → 「あ」「あさ」",
+    "targets": [39],
+    "onBoard": [39],
+    "mode": "group",
+    "excludeDead": false,
+    "expected": { "groups": ["あ", "あさ"], "poems": [] }
+  },
+  {
+    "description": "対象 あさじ、個別 → あさじ",
+    "targets": [39],
+    "onBoard": [39],
+    "mode": "individual",
+    "excludeDead": false,
+    "expected": { "groups": [], "poems": [39] }
+  },
+  {
+    "description": "対象 あさじ、混合 → 「あ」「あさ」とあさじ",
+    "targets": [39],
+    "onBoard": [39],
+    "mode": "mixed",
+    "excludeDead": false,
+    "expected": { "groups": ["あ", "あさ"], "poems": [39] }
+  },
+  {
+    "description": "場にあるのが あさじ だけ、グループ、空札を除外する ON → 「あさぼ」は出ない",
+    "targets": [39, 31, 64],
+    "onBoard": [39],
+    "mode": "group",
+    "excludeDead": true,
+    "expected": { "groups": ["あ", "あさ"], "poems": [] }
+  },
+  {
+    "description": "同上、空札を除外する OFF → 「あさぼ」も出る",
+    "targets": [39, 31, 64],
+    "onBoard": [39],
+    "mode": "group",
+    "excludeDead": false,
+    "expected": { "groups": ["あ", "あさ", "あさぼ"], "poems": [] }
+  },
+  {
+    "description": "同上、個別、空札を除外する ON → あさじ だけ",
+    "targets": [39, 31, 64],
+    "onBoard": [39],
+    "mode": "individual",
+    "excludeDead": true,
+    "expected": { "groups": [], "poems": [39] }
+  },
+  {
+    "description": "同上、個別、空札を除外する OFF → 3首とも",
+    "targets": [39, 31, 64],
+    "onBoard": [39],
+    "mode": "individual",
+    "excludeDead": false,
+    "expected": { "groups": [], "poems": [39, 31, 64] }
+  }
+]

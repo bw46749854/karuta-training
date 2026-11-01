@@ -9,7 +9,7 @@ export default defineConfig({
         "packages/domain/src/**/*.ts",
         "packages/application/src/**/*.ts",
       ],
-      exclude: ["**/*.test.ts"],
+      exclude: ["**/*.test.ts", "**/test-support/**"],
       // Design principles §4: line and branch coverage of 95% or more.
       thresholds: { lines: 95, branches: 95, functions: 95, statements: 95 },
     },
