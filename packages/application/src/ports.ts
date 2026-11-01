@@ -12,3 +12,14 @@ export interface Scheduler {
 
 /** An integer from 0 up to, but not including, bound (ADR-0002 §1). */
 export type Random = RandomInt;
+
+/**
+ * Keeps one saved document as it is. Checking it and filling in what is
+ * missing is application's job, not the store's (ADR-0003 §5).
+ */
+export interface SettingsRepository {
+  /** The saved document, or undefined when none is saved or it is unreadable. */
+  load(): Promise<unknown>;
+  /** Saves the document in place of the one before. */
+  save(document: unknown): Promise<"saved" | "failed">;
+}
