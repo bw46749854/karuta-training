@@ -71,7 +71,10 @@ function Layout(props: {
           />
         )}
       </div>
-      {running === undefined ? null : (
+      {running === undefined ? (
+        // The same width as the panel, so the board's area does not change.
+        <div className="placement-panel" />
+      ) : (
         <PlacementPanel
           view={running.view}
           dispatch={dispatch}
@@ -140,9 +143,12 @@ export function PlacementScreen(props: {
   const [area, setArea] = useState<HTMLDivElement | null>(null);
   const size = useElementSize(area);
   const shape = useBoardShape(landscape, size);
+  // The panel is there while measuring too, so the board's area is the
+  // same as when the board is shown (spec 07 §2.3).
   const measuring = (
     <div className="placement">
       <div className="board-area" ref={setArea} />
+      <div className="placement-panel" />
     </div>
   );
   return (

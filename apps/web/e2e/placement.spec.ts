@@ -243,3 +243,30 @@ test.describe("盤面の入らない大きさ", () => {
     await expect(page.getByText(P.tooSmall)).toBeVisible();
   });
 });
+
+test.describe("幅の狭い横向き", () => {
+  test.use({ viewport: { width: 700, height: 400 } });
+
+  test("仕様 07 §2.3 ADR-0007 §2 §6 右の欄を除いた領域で形を決めるので、札の幅は 44 以上になる", async ({
+    page,
+  }) => {
+    await page.goto("/#/placement");
+    const cells = page.getByRole("button", { name: /段目/ });
+    await cells.first().waitFor();
+    // 700 wide leaves 412 beside the panel: 8 columns of cards 48 wide.
+    await expect(cells.last()).toHaveAccessibleName(/^4段目 8列目 /);
+    const box = await cells.first().boundingBox();
+    expect(box?.width ?? 0).toBeGreaterThanOrEqual(44);
+  });
+});
+
+test.describe("盤面の入らない横向き", () => {
+  test.use({ viewport: { width: 640, height: 360 } });
+
+  test("仕様 07 §2.3 右の欄を除くと 8 列も入らない画面では、使えないことを伝える", async ({
+    page,
+  }) => {
+    await page.goto("/#/placement");
+    await expect(page.getByText(P.tooSmall)).toBeVisible();
+  });
+});
