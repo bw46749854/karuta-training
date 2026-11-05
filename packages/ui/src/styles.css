@@ -1,0 +1,114 @@
+/* Provisional looks. The looks are reviewed in stage 5. */
+:root {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #1f2328;
+  background: #fafaf7;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 1100px;
+  padding: 0 16px 48px;
+}
+
+/* ADR-0007 §6: anything pressed by touch is at least 44 by 44. */
+button,
+select,
+input[type="number"] {
+  min-height: 44px;
+  font: inherit;
+}
+
+button {
+  min-width: 44px;
+  padding: 0 12px;
+}
+
+input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  margin: 10px;
+}
+
+:focus-visible {
+  outline: 3px solid #0b5fff;
+  outline-offset: 2px;
+}
+
+.screen-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.top-entries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.settings-actions,
+.setting-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-section {
+  margin-top: 24px;
+  border-top: 1px solid #d0d7de;
+}
+
+.setting-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.setting-row input[type="number"] {
+  width: 8em;
+}
+
+.setting-error {
+  flex-basis: 100%;
+  margin: 0;
+  color: #b42318;
+}
+
+.toggle-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.toggle-list button[aria-pressed="true"] {
+  color: #ffffff;
+  background: #1f6f43;
+  border-color: #1f6f43;
+}
+
+.layout-board {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-x: auto;
+}
+
+.layout-side {
+  display: grid;
+  gap: 0;
+}
+
+.layout-cell {
+  justify-self: center;
+}

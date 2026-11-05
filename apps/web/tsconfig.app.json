@@ -7,5 +7,9 @@
     "rootDir": "src",
     "outDir": "dist-types/app"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    { "path": "../../packages/adapters-web" },
+    { "path": "../../packages/ui" }
+  ]
 }
