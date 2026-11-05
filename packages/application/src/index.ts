@@ -60,3 +60,8 @@ export {
   type Notice,
 } from "./multiple-card-flow/multiple-card-flow";
 export type { KimarijiRow, ListOrder } from "./practice/kimariji-list";
+export {
+  boardShapeFor,
+  cardWidthFor,
+  type Area,
+} from "./placement/board-shape";
