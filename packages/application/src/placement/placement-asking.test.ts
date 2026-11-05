@@ -170,6 +170,19 @@ test("仕様 07 §5.9 §5.10 全部終わると知らせて覚える時間に戻
   expect(faceUp(endedAfterJudging).every(([, up]) => up)).toBe(true);
 });
 
+test("仕様 07 §5.9 終わりの知らせは、覚える時間の次の操作で消す", () => {
+  const input = inputOf();
+  const done = [start(individual(39)), { kind: "skip" } as const];
+  for (const command of [
+    { kind: "flip-cell", cell: 0 },
+    { kind: "flip-poem", poem: idOf(39) },
+    { kind: "flip-group", name: "あさ" },
+    { kind: "invert" },
+  ] as const) {
+    expect(P.view(play(input, [...done, command])).notice).toBeNull();
+  }
+});
+
 test("ADR-0004 §2 その段階で意味のない操作は、何も変えない", () => {
   const input = inputOf();
   const memorizing = play(input, []);

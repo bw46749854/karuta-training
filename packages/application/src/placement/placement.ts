@@ -187,13 +187,28 @@ function answer(
   };
 }
 
+/**
+ * Spec 07 §5.9: the notice that the questions are over goes when the cards
+ * are turned over again. Nothing changes when nothing was turned.
+ */
+function turnedWhileMemorizing(
+  state: PlacementState,
+  next: PlacementState,
+): PlacementStep {
+  return stay(
+    next === state
+      ? state
+      : { ...next, phase: { kind: "memorizing", notice: null } },
+  );
+}
+
 function onMemorizing(
   state: PlacementState,
   command: PlacementCommand,
 ): PlacementStep {
   switch (command.kind) {
     case "invert":
-      return stay({
+      return turnedWhileMemorizing(state, {
         ...state,
         faceDown: state.input.board.cells.map(
           (poem, cell) => poem !== null && state.faceDown[cell] !== true,
@@ -204,7 +219,7 @@ function onMemorizing(
     case "flip-cell":
     case "flip-poem":
     case "flip-group":
-      return stay(flip(state, command));
+      return turnedWhileMemorizing(state, flip(state, command));
     case "answer":
     case "skip":
     case "next":
