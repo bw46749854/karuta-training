@@ -150,3 +150,20 @@ test("仕様 08 §7.5 プレイ終了で、取り除いた札も戻した元の�
   await expect(card(page, [6, 11, 64])).toBeVisible();
   await expect(card(page, [6, 10, 39])).toBeVisible();
 });
+
+test("仕様 08 §2.5 §2.6 縦向きで開いたときは、横向きにするまで読み始めない", async ({
+  page,
+}) => {
+  await setUp(page, [39, 31, 64], 300);
+  await press(page, Y.finish);
+  await page.setViewportSize({ width: 720, height: 1280 });
+  await page.evaluate(() => {
+    location.hash = "#/play";
+  });
+  await expect(page.getByText(P.rotate)).toBeVisible();
+  // Long enough to read the whole first poem (6 letters of 300).
+  await page.waitForTimeout(2500);
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await expect(page.getByText(C.progressText(0, 3))).toBeVisible();
+  await expect(page.getByRole("status")).toHaveText("");
+});

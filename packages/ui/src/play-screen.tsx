@@ -22,6 +22,34 @@ const Y = WORDING.play;
 // ADR-0007 §6: a card is pressed by touch, so it is at least 44 wide.
 const MIN_CARD_WIDTH = 44;
 
+/**
+ * Spec 08 §2.5, §2.6: reading starts once the board can be seen, and then
+ * goes on even if the screen is turned upright for a while.
+ */
+function useStartWhenShown(shown: boolean): boolean {
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    if (shown) {
+      setStarted(true);
+    }
+  }, [shown]);
+  return started || shown;
+}
+
+/** The play's session, started once the board is shown. */
+function usePlaySession(ports: PracticePorts, board: Board, shown: boolean) {
+  const started = useStartWhenShown(shown);
+  const inputOf = useMemo(
+    () =>
+      started
+        ? (settings: Settings, random: Random) =>
+            playInput(settings, board, random)
+        : null,
+    [board, started],
+  );
+  return usePracticeSession(PLAY, inputOf, { ...ports, round: 0 });
+}
+
 /** The board, or the notice when its cards would be too small. */
 function PlayBoard(props: {
   readonly view: PlayView;
@@ -58,15 +86,13 @@ function PlayPractice(props: {
   const landscape = useLandscape();
   const [area, setArea] = useState<HTMLDivElement | null>(null);
   const size = useElementSize(area);
-  const inputOf = useMemo(
-    () => (settings: Settings, random: Random) =>
-      playInput(settings, board, random),
-    [board],
+  const { session, view } = usePlaySession(
+    ports,
+    board,
+    landscape &&
+      size !== undefined &&
+      cardWidthFor(board.shape, size) >= MIN_CARD_WIDTH,
   );
-  const { session, view } = usePracticeSession(PLAY, inputOf, {
-    ...ports,
-    round: 0,
-  });
   if (!landscape) {
     return <p>{P.rotate}</p>;
   }
