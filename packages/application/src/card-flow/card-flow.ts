@@ -1,8 +1,6 @@
 import {
-  CandidateSet,
   judgeSingleAnswer,
   kimariji,
-  POEMS,
   questionTargets,
   singleCardQuestions,
   type Orientation,
@@ -11,6 +9,14 @@ import {
   type UnconvertibleReason,
 } from "@karuta/domain";
 import type { Effect, Outcome, PracticeMode, Step } from "../practice/contract";
+import {
+  candidatesAfter,
+  kimarijiRows,
+  staticKimariji,
+  type CardResult,
+  type KimarijiRow,
+  type ListOrder,
+} from "../practice/kimariji-list";
 import type { Random } from "../ports";
 import type { Settings } from "../settings/definition";
 
@@ -47,12 +53,6 @@ export type Judgement =
       readonly kimariji: string;
       readonly reason: UnconvertibleReason | null;
     };
-
-interface CardResult {
-  readonly poem: PoemId;
-  readonly outcome: Outcome;
-  readonly changed: boolean;
-}
 
 type Phase =
   | {
@@ -99,18 +99,6 @@ export interface CardFlowView {
 
 const NEXT_KEY = "next";
 
-const ALL_CANDIDATES = CandidateSet.afterReading([]);
-
-/** With all 100 poems as candidates, this is the static kimariji. */
-function staticKimariji(poem: PoemId): string {
-  return kimariji(poem, ALL_CANDIDATES);
-}
-
-/** The candidates after these poems were read, or all 100 when off. */
-function candidates(input: CardFlowInput, read: readonly PoemId[]) {
-  return CandidateSet.afterReading(input.kimarijiChange ? read : []);
-}
-
 /** The question at the index, or the end when there are no more. */
 function phaseAt(input: CardFlowInput, index: number): Phase {
   const question = input.questions[index];
@@ -124,7 +112,7 @@ function askedKimariji(state: CardFlowState, poem: PoemId): string {
   const before = state.input.questions
     .slice(0, state.index)
     .map((question) => question.poem);
-  return kimariji(poem, candidates(state.input, before));
+  return kimariji(poem, candidatesAfter(state.input.kimarijiChange, before));
 }
 
 function stay(state: CardFlowState): Step<CardFlowState, CardFlowTimer> {
@@ -281,43 +269,14 @@ export function cardFlowInput(
   };
 }
 
-/** Spec 05 §8.3. */
-export interface KimarijiRow {
-  readonly poem: PoemId;
-  readonly kimariji: string;
-  readonly status: "unread" | Outcome;
-  readonly changed: boolean;
-}
-
-export type ListOrder = "kimariji" | "asked";
-
 /** Spec 05 §8: the rows of the kimariji list, in the order asked for. */
 export function kimarijiList(
   state: CardFlowState,
   order: ListOrder,
 ): KimarijiRow[] {
-  const finished = new Map(
-    state.results.map((result) => [result.poem, result]),
-  );
-  const now = candidates(
-    state.input,
-    state.results.map((result) => result.poem),
-  );
-  const row = (poem: PoemId): KimarijiRow => {
-    const result = finished.get(poem);
-    const kimarijiNow = result === undefined ? kimariji(poem, now) : "";
-    return {
-      poem,
-      kimariji: staticKimariji(poem),
-      status: result?.outcome ?? "unread",
-      changed: result?.changed ?? kimarijiNow !== staticKimariji(poem),
-    };
-  };
-  if (order === "asked") {
-    return state.results.map((result) => row(result.poem));
-  }
-  const targets = new Set(state.input.targets);
-  return POEMS.map((poem) => poem.id)
-    .filter((poem) => targets.has(poem))
-    .map(row);
+  return kimarijiRows({
+    targets: state.input.targets,
+    results: state.results,
+    kimarijiChange: state.input.kimarijiChange,
+  })[order];
 }

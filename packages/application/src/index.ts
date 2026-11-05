@@ -48,10 +48,8 @@ export { layoutFor, type LayoutsByShape } from "./settings/items";
 export {
   CARD_FLOW,
   cardFlowInput,
-  kimarijiList,
   type CardFlowCommand,
   type CardFlowView,
   type Judgement,
-  type KimarijiRow,
-  type ListOrder,
 } from "./card-flow/card-flow";
+export type { KimarijiRow, ListOrder } from "./practice/kimariji-list";
