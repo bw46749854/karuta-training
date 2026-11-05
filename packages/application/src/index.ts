@@ -1,4 +1,11 @@
-export type { Clock, Random, Scheduler, SettingsRepository } from "./ports";
+export type {
+  CardFace,
+  CardFaceProvider,
+  Clock,
+  Random,
+  Scheduler,
+  SettingsRepository,
+} from "./ports";
 export type {
   Effect,
   Message,

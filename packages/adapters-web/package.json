@@ -5,5 +5,9 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@karuta/application": "workspace:*",
+    "@karuta/domain": "workspace:*"
   }
 }
