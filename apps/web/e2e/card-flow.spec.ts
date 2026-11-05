@@ -16,6 +16,7 @@ const KIMARIJI: Readonly<Record<number, string>> = {
 
 interface CardFlowSettings {
   readonly poems: readonly number[];
+  readonly limited?: boolean;
   readonly count?: number;
   readonly kimarijiChange?: boolean;
   readonly autoNext?: boolean;
@@ -42,6 +43,9 @@ async function setUp(page: Page, settings: CardFlowSettings): Promise<void> {
       .getByRole("button", { name: S.poem(poem, KIMARIJI[poem] ?? "") })
       .click();
   }
+  await page
+    .getByRole("checkbox", { name: S.items["common.limited"] })
+    .setChecked(settings.limited ?? true);
   const cardFlow = page.getByRole("region", {
     name: S.sections.cardFlow,
     exact: true,
@@ -151,6 +155,7 @@ test("仕様 05 §4.4 B-01 B-02 決まり字変化を考慮する ON では変�
 }) => {
   await setUp(page, { poems: [74, 65], count: 2 });
   await answer(page, "うら");
+  await expect(page.getByRole("status")).toHaveText(C.correct);
   await page.getByRole("button", { name: C.next }).click();
   await answer(page, "うか");
   await expect(page.getByRole("status")).toHaveText(C.wrong("う"));
@@ -207,4 +212,34 @@ test("仕様 05 §8 一覧の状態と、出題順の並び", async ({ page }) =
   await expect(list.getByRole("listitem")).toHaveCount(1);
   await list.getByRole("button", { name: C.byKimariji }).click();
   await expect(list.getByRole("listitem")).toHaveCount(3);
+});
+
+test("仕様 05 §2.2 B-26 一度も保存していなければ、設定画面と同じ初期値で動く", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page
+    .getByRole("button", { name: WORDING.top.open["card-flow"] })
+    .click();
+  await expect(progress(page, 0, 100)).toBeVisible();
+});
+
+test("仕様 05 §2.3 B-17 限定を OFF で保存すると、選んだ歌があっても100首から出す", async ({
+  page,
+}) => {
+  await setUp(page, { poems: [65, 74], limited: false });
+  await expect(progress(page, 0, 100)).toBeVisible();
+});
+
+test("仕様 05 §6 B-21 B-24 出題の対象が出題枚数より少なければ、対象を出し切って終わり、終わった後は何も変わらない", async ({
+  page,
+}) => {
+  await setUp(page, { poems: [87, 18], count: 4 });
+  for (const finished of [0, 1]) {
+    await expect(progress(page, finished, 2)).toBeVisible();
+    await page.getByRole("button", { name: C.skip }).click();
+  }
+  await expect(progress(page, 2, 2)).toBeVisible();
+  await expect(page.getByRole("status")).toHaveText(C.finished);
+  await expect(page.getByRole("button", { name: C.skip })).toHaveCount(0);
 });
