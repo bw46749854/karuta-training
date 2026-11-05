@@ -28,13 +28,19 @@ export interface PracticePorts {
  */
 export function usePracticeSession<Input, State, Command, Timer, View>(
   mode: PracticeMode<Input, State, Command, Timer, View>,
-  inputOf: (settings: Settings, random: Random) => Input,
+  /** Null while the session cannot start yet. */
+  inputOf: ((settings: Settings, random: Random) => Input) | null,
   ports: PracticePorts & { readonly round: number },
-): { readonly session?: Session<Command, View>; readonly view?: View } {
+): {
+  readonly session?: Session<Command, View>;
+  readonly view?: View;
+  readonly input?: Input;
+} {
   const [settings, setSettings] = useState<Settings>();
   const [running, setRunning] = useState<{
     readonly session: Session<Command, View>;
     readonly view: View;
+    readonly input: Input;
   }>();
   useEffect(() => {
     let open = true;
@@ -49,13 +55,14 @@ export function usePracticeSession<Input, State, Command, Timer, View>(
   }, [ports.settings]);
   const { random, round } = ports;
   useEffect(() => {
-    if (settings === undefined) {
+    if (settings === undefined || inputOf === null) {
       return undefined;
     }
-    const session = runSession(mode, inputOf(settings, random), ports);
-    setRunning({ session, view: session.view() });
+    const input = inputOf(settings, random);
+    const session = runSession(mode, input, ports);
+    setRunning({ session, view: session.view(), input });
     const unsubscribe = session.subscribe((view) => {
-      setRunning({ session, view });
+      setRunning({ session, view, input });
     });
     return () => {
       unsubscribe();

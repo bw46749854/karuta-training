@@ -1,41 +1,10 @@
 import type { PoemSelectionView } from "@karuta/application";
 import type { PoemId } from "@karuta/domain";
 import type { ReactNode } from "react";
+import { ToggleList } from "./toggle-list";
 import { WORDING } from "./wording";
 
 const S = WORDING.settings;
-
-function ToggleList<Key extends number | string>(props: {
-  readonly id: string;
-  readonly title: string;
-  readonly items: readonly {
-    readonly key: Key;
-    readonly label: string;
-    readonly selected: boolean;
-  }[];
-  readonly onToggle: (key: Key) => void;
-}): ReactNode {
-  return (
-    <section aria-labelledby={`${props.id}-title`}>
-      <h3 id={`${props.id}-title`}>{props.title}</h3>
-      <ul className="toggle-list">
-        {props.items.map((item) => (
-          <li key={item.key}>
-            <button
-              type="button"
-              aria-pressed={item.selected}
-              onClick={() => {
-                props.onToggle(item.key);
-              }}
-            >
-              {item.label}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
 
 /** Spec 04 §6: choosing poems by group or one by one. */
 export function PoemSelection(props: {
