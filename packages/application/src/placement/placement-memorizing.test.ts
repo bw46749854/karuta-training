@@ -2,7 +2,11 @@ import { boardShape } from "@karuta/domain";
 import { expect, test } from "vitest";
 import { DEFAULT_SETTINGS } from "../settings/definition";
 import { faceUp, idOf, inputOf, play } from "../test-support/placement";
-import { placementInput, placementQuestionsFor } from "./input";
+import {
+  placementInput,
+  placementInputOn,
+  placementQuestionsFor,
+} from "./input";
 import { PLACEMENT } from "./placement";
 
 const P = PLACEMENT;
@@ -128,4 +132,12 @@ test("仕様 07 §4 場にない札や、場にない札だけのグループは
       state,
     );
   }
+});
+
+test("仕様 08 §7.5 実践練習から戻ったときは、保存した盤面のまま始める", () => {
+  const board = inputOf().board;
+  const input = placementInputOn(DEFAULT_SETTINGS, board);
+  expect(input.board).toBe(board);
+  expect(input.mode).toBe(DEFAULT_SETTINGS.placement.mode);
+  expect(P.view(play(input, [])).actions.start).toBe(true);
 });

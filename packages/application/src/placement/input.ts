@@ -3,6 +3,7 @@ import {
   placementQuestions,
   poemsOnBoard,
   questionTargets,
+  type Board,
   type BoardShape,
   type PlacementQuestion,
 } from "@karuta/domain";
@@ -20,11 +21,23 @@ export function placementInput(
   shape: BoardShape,
   random: Random,
 ): PlacementInput {
-  const { common, placement } = settings;
+  const { common } = settings;
   const targets = questionTargets(common.limited, common.selected);
+  return placementInputOn(
+    settings,
+    deal(targets, layoutFor(common.layouts, shape), random),
+  );
+}
+
+/** Spec 08 §7.5: the same, on a board already dealt (back from the play). */
+export function placementInputOn(
+  settings: Settings,
+  board: Board,
+): PlacementInput {
+  const { common, placement } = settings;
   return {
-    board: deal(targets, layoutFor(common.layouts, shape), random),
-    targets,
+    board,
+    targets: questionTargets(common.limited, common.selected),
     mode: placement.mode,
     excludeDead: placement.excludeDead,
     showAnswer: placement.showAnswer,

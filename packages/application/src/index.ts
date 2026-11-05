@@ -66,7 +66,11 @@ export {
   cardWidthFor,
   type Area,
 } from "./placement/board-shape";
-export { placementInput, placementQuestionsFor } from "./placement/input";
+export {
+  placementInput,
+  placementInputOn,
+  placementQuestionsFor,
+} from "./placement/input";
 export {
   PLACEMENT,
   type PlacementCommand,
