@@ -8,6 +8,7 @@ import {
 import {
   CardFlowScreen,
   MultipleCardFlowScreen,
+  PlacementScreen,
   SettingsScreen,
   TopScreen,
   type PracticePorts,
@@ -32,6 +33,7 @@ const HASHES = {
   top: "#/",
   "card-flow": "#/card-flow",
   multiple: "#/multiple",
+  placement: "#/placement",
   settings: "#/settings",
 } as const;
 
@@ -44,6 +46,8 @@ function currentScreen(): Screen {
       return "card-flow";
     case HASHES.multiple:
       return "multiple";
+    case HASHES.placement:
+      return "placement";
     case HASHES.settings:
       return "settings";
     default:
@@ -74,6 +78,8 @@ function App(): ReactNode {
       return (
         <MultipleCardFlowScreen ports={practicePorts} onBackToTop={backToTop} />
       );
+    case "placement":
+      return <PlacementScreen ports={practicePorts} onBackToTop={backToTop} />;
     case "settings":
       return <SettingsScreen repository={settings} onBackToTop={backToTop} />;
     case "top":

@@ -1,5 +1,7 @@
 /* Provisional looks. The looks are reviewed in stage 5. */
 :root {
+  --header-height: 72px;
+
   font-family: system-ui, sans-serif;
   line-height: 1.5;
   color: #1f2328;
@@ -42,6 +44,12 @@ input[type="checkbox"] {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-height: var(--header-height);
+}
+
+.screen-header h1 {
+  margin: 0;
+  line-height: 1.2;
 }
 
 .top-entries {
@@ -199,8 +207,11 @@ input[type="checkbox"] {
 }
 
 @media (max-height: 500px) {
+  :root {
+    --header-height: 52px;
+  }
+
   .screen-header h1 {
-    margin: 4px 0;
     font-size: 1.5em;
   }
 }
@@ -211,4 +222,71 @@ input[type="checkbox"] {
 
 .taking-card.blank {
   background: #ffffff;
+}
+
+/* Spec 07 §3: the board on the left, the panel on the right. The board's
+   area is measured, and the board shape chosen from it (ADR-0007 §2). */
+.placement {
+  display: flex;
+  gap: 16px;
+  height: calc(100dvh - var(--header-height) - 16px);
+}
+
+.board-area {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.placement-panel {
+  flex: 0 0 240px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.placement-panel .question {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.board-side {
+  display: grid;
+  gap: 4px;
+}
+
+.board-cell {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: inherit;
+}
+
+.board-cell .taking-card {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  font-size: inherit;
+}
+
+.card-back {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  background: #2f5d3a;
+  border: 2px solid #3d3d3d;
+  border-radius: 6px;
+}
+
+/* Spec 07 §5.4: a chosen cell shows a white card. */
+.board-cell.selected .card-back {
+  background: #ffffff;
+  border: 3px solid #0b5fff;
 }

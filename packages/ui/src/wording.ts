@@ -24,6 +24,7 @@ export const WORDING = {
     open: {
       "card-flow": "札流し",
       multiple: "札流し（複数枚）",
+      placement: "配置暗記",
       settings: "設定",
     },
   },
@@ -84,6 +85,25 @@ export const WORDING = {
       "too-many":
         "答えが札の枚数より多いので、受け付けませんでした。札の枚数までにしてください。",
     },
+  },
+  /** Spec 07 §8. Answer, skip and next are as in the card flow. */
+  placement: {
+    title: "配置暗記",
+    invert: "表と裏を入れ替える",
+    redeal: "配り直す",
+    start: "出題を始める",
+    end: "出題を終える",
+    correct: "正解",
+    wrong: "誤答",
+    question: (text: string): string => `問：${text}`,
+    allAsked: "出題はすべて終わりました。",
+    rotate: "横向きにしてください。",
+    tooSmall: "この画面の大きさでは、盤面を使う練習はできません。",
+    board: "盤面",
+    cardCell: (row: number, column: number, poem: number): string =>
+      `${String(row)}段目 ${String(column)}列目 歌番号 ${String(poem)} の札`,
+    hiddenCell: (row: number, column: number): string =>
+      `${String(row)}段目 ${String(column)}列目 伏せた札`,
   },
   /** Spec 04 §4 to §11. */
   settings: {
