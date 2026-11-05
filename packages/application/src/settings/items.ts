@@ -11,11 +11,27 @@ import {
 // part gives the type, the default and the check of one item together, so
 // no item can have one without the others.
 
+/** How the settings screen edits an item (spec 04 §10). */
+export type ItemForm =
+  | { readonly kind: "flag" }
+  | { readonly kind: "integer"; readonly min: number; readonly max: number }
+  | { readonly kind: "choice"; readonly options: readonly string[] }
+  | { readonly kind: "poems" }
+  | { readonly kind: "layouts" }
+  | { readonly kind: "group"; readonly fields: readonly NamedItem[] };
+
 /** One setting: its default, and how to read it from a saved document. */
 export interface Item<T> {
   readonly defaultValue: T;
   /** The value, or undefined when it is missing or not valid. */
   read(saved: unknown): T | undefined;
+  readonly form: ItemForm;
+}
+
+/** An item of a group, under its name. */
+export interface NamedItem {
+  readonly name: string;
+  readonly item: Item<unknown>;
 }
 
 /** Gives the value of one named item in a group. */
@@ -41,11 +57,52 @@ export function fieldOf(saved: unknown, name: string): unknown {
   return value;
 }
 
+/** The object with one named value put in, in place of any before. */
+export function withField(
+  saved: unknown,
+  name: string,
+  value: unknown,
+): object {
+  return { ...(isRecord(saved) ? saved : {}), [name]: value };
+}
+
 /** An item that is on or off. */
 export function flag(defaultValue: boolean): Item<boolean> {
   return {
     defaultValue,
     read: (saved) => (typeof saved === "boolean" ? saved : undefined),
+    form: { kind: "flag" },
+  };
+}
+
+/** An item that is a whole number from min to max. */
+export function integer(
+  min: number,
+  max: number,
+  defaultValue: number,
+): Item<number> {
+  return {
+    defaultValue,
+    read: (saved) =>
+      typeof saved === "number" &&
+      Number.isInteger(saved) &&
+      saved >= min &&
+      saved <= max
+        ? saved
+        : undefined,
+    form: { kind: "integer", min, max },
+  };
+}
+
+/** An item that is one of the options, shown in their order. */
+export function choice<const T extends string>(
+  options: readonly T[],
+  defaultValue: NoInfer<T>,
+): Item<T> {
+  return {
+    defaultValue,
+    read: (saved) => options.find((option) => option === saved),
+    form: { kind: "choice", options },
   };
 }
 
@@ -72,6 +129,7 @@ export function poemIds(
         ids.length === saved.length && new Set(ids).size === ids.length;
       return valid ? ids : undefined;
     },
+    form: { kind: "poems" },
   };
 }
 
@@ -110,7 +168,21 @@ export function layoutsByShape(): Item<LayoutsByShape> {
         return isUsedOf(shape, used) ? used : defaultLayout(shape).used;
       });
     },
+    form: { kind: "layouts" },
   };
+}
+
+/** The layouts with one shape's layout put in place of the one before. */
+export function withLayout(
+  layouts: LayoutsByShape,
+  shape: BoardShape,
+  used: readonly boolean[],
+): LayoutsByShape {
+  return byShape((other) =>
+    other.rows === shape.rows && other.columns === shape.columns
+      ? used
+      : layouts[other.rows][other.columns],
+  );
 }
 
 /** The layout of one board shape. */
@@ -124,8 +196,14 @@ export function layoutFor(layouts: LayoutsByShape, shape: BoardShape): Layout {
  * names not in the group are dropped (ADR-0003 §4).
  */
 export function group<T>(build: (field: Field) => T): Item<Readonly<T>> {
+  const fields: NamedItem[] = [];
+  const defaultValue = build((name, item) => {
+    fields.push({ name, item });
+    return item.defaultValue;
+  });
   return {
-    defaultValue: build((_name, item) => item.defaultValue),
+    defaultValue,
+    form: { kind: "group", fields },
     read: (saved) => {
       if (!isRecord(saved)) {
         return undefined;

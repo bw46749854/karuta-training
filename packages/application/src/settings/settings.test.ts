@@ -27,11 +27,52 @@ const layouts: fc.Arbitrary<LayoutsByShape> = fc.record({
   6: columnsOf(6),
   4: columnsOf(4),
 });
+const orientation = fc.constantFrom("random", "upright", "upside-down");
+const afterAnswer = fc.constantFrom(
+  "always",
+  "never",
+  "when-correct",
+  "when-wrong",
+);
+const ms = fc.integer({ min: 1, max: 9999 });
+const count = fc.integer({ min: 1, max: 100 });
 const anySettings: fc.Arbitrary<Settings> = fc.record({
   common: fc.record({
     limited: fc.boolean(),
     selected: fc.shuffledSubarray(ALL),
     layouts,
+  }),
+  cardFlow: fc.record({
+    orientation,
+    romajiAllowed: fc.boolean(),
+    kimarijiChange: fc.boolean(),
+    autoNext: fc.boolean(),
+    waitMs: ms,
+    count,
+  }),
+  multiple: fc.record({
+    orientation,
+    romajiAllowed: fc.boolean(),
+    kimarijiChange: fc.boolean(),
+    autoNext: fc.boolean(),
+    waitMs: ms,
+    count,
+    perQuestion: fc.integer({ min: 2, max: 6 }),
+    displayMs: ms,
+  }),
+  placement: fc.record({
+    mode: fc.constantFrom("mixed", "individual", "group"),
+    excludeDead: fc.boolean(),
+    showAnswer: afterAnswer,
+    allowCheck: afterAnswer,
+    autoNext: fc.boolean(),
+    waitMs: ms,
+  }),
+  play: fc.record({
+    excludeDead: fc.boolean(),
+    letterIntervalMs: ms,
+    autoNext: fc.boolean(),
+    waitMs: ms,
   }),
 });
 
@@ -58,6 +99,7 @@ test("ADR-0003 §4 ない項目と正しくない項目だけを初期値で補�
     settings: { common: { limited: false, selected: [0], unknown: 1 } },
   };
   expect(readSettingsDocument(document)).toEqual({
+    ...DEFAULT_SETTINGS,
     common: { ...DEFAULT_SETTINGS.common, limited: false },
   });
 });
@@ -84,6 +126,7 @@ test("ADR-0003 §5 保存先から読み、保存先へ保存する", async () =
   const repository = new MemoryRepository();
   expect(await loadSettings(repository)).toEqual(DEFAULT_SETTINGS);
   const changed: Settings = {
+    ...DEFAULT_SETTINGS,
     common: { ...DEFAULT_SETTINGS.common, limited: false },
   };
   expect(await saveSettings(repository, changed)).toBe("saved");
@@ -91,4 +134,42 @@ test("ADR-0003 §5 保存先から読み、保存先へ保存する", async () =
   repository.failSaves = true;
   expect(await saveSettings(repository, DEFAULT_SETTINGS)).toBe("failed");
   expect(await loadSettings(repository)).toEqual(changed);
+});
+
+test("仕様 04 §5 初期値は、取扱説明書の各表の「設定画面の初期値」（B-26）", () => {
+  const { cardFlow, multiple, placement, play } = DEFAULT_SETTINGS;
+  expect({ cardFlow, multiple, placement, play }).toEqual({
+    cardFlow: {
+      orientation: "random",
+      romajiAllowed: true,
+      kimarijiChange: true,
+      autoNext: false,
+      waitMs: 500,
+      count: 100,
+    },
+    multiple: {
+      orientation: "random",
+      romajiAllowed: true,
+      kimarijiChange: false,
+      autoNext: false,
+      waitMs: 500,
+      count: 100,
+      perQuestion: 5,
+      displayMs: 500,
+    },
+    placement: {
+      mode: "group",
+      excludeDead: true,
+      showAnswer: "when-correct",
+      allowCheck: "when-correct",
+      autoNext: false,
+      waitMs: 500,
+    },
+    play: {
+      excludeDead: true,
+      letterIntervalMs: 500,
+      autoNext: false,
+      waitMs: 500,
+    },
+  });
 });

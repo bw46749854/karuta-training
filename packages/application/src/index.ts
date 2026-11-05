@@ -14,14 +14,32 @@ export type {
   Step,
 } from "./practice/contract";
 export { runSession, type Session } from "./practice/runner";
-export { DEFAULT_SETTINGS, type Settings } from "./settings/definition";
+export {
+  DEFAULT_SETTINGS,
+  type AfterAnswer,
+  type Settings,
+} from "./settings/definition";
 export { loadSettings } from "./settings/document";
 export {
-  changeDraft,
+  canSave,
+  clearPoems,
   discardDraft,
+  editField,
   resetDraft,
   saveDraft,
+  selectAllPoems,
   startEditing,
+  toggleCell,
+  toggleGroup,
+  togglePoem,
   type SettingsEditor,
 } from "./settings/editor";
+export {
+  LAYOUT_SHAPES,
+  poemSelection,
+  settingsForm,
+  type FormField,
+  type FormSection,
+  type PoemSelectionView,
+} from "./settings/form";
 export { layoutFor, type LayoutsByShape } from "./settings/items";

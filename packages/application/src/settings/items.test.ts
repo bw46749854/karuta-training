@@ -1,9 +1,12 @@
 import { BOARD_SHAPES, boardShape, defaultLayout, POEMS } from "@karuta/domain";
 import { expect, test } from "vitest";
 import {
+  choice,
   fieldOf,
   flag,
   group,
+  integer,
+  withField,
   layoutFor,
   layoutsByShape,
   poemIds,
@@ -83,4 +86,46 @@ test("ADR-0003 §4 まとまりは、項目ごとに読み、ない項目や正�
   for (const invalid of [null, 3, "x", [true]]) {
     expect(item.read(invalid)).toBeUndefined();
   }
+});
+
+test("仕様 04 §5 §7 範囲のある整数の項目は、範囲の中の整数だけを読む", () => {
+  const item = integer(1, 9999, 500);
+  expect(item.defaultValue).toBe(500);
+  expect(item.form).toEqual({ kind: "integer", min: 1, max: 9999 });
+  for (const valid of [1, 500, 9999]) {
+    expect(item.read(valid)).toBe(valid);
+  }
+  for (const invalid of [0, 10000, 1.5, -1, "500", null, Number.NaN]) {
+    expect(item.read(invalid)).toBeUndefined();
+  }
+});
+
+test("仕様 04 §5 選択肢の項目は、選択肢の値だけを読む", () => {
+  const item = choice(["random", "upright", "upside-down"], "random");
+  expect(item.defaultValue).toBe("random");
+  expect(item.form).toEqual({
+    kind: "choice",
+    options: ["random", "upright", "upside-down"],
+  });
+  expect(item.read("upright")).toBe("upright");
+  for (const invalid of ["Upright", "", 0, null]) {
+    expect(item.read(invalid)).toBeUndefined();
+  }
+});
+
+test("仕様 04 §10 まとまりは、項目を書いた順に持つ", () => {
+  const item = group((field) => ({
+    b: field("b", flag(true)),
+    a: field("a", integer(1, 9, 1)),
+  }));
+  const fields = item.form.kind === "group" ? item.form.fields : [];
+  expect(fields.map((field) => [field.name, field.item.form])).toEqual([
+    ["b", { kind: "flag" }],
+    ["a", { kind: "integer", min: 1, max: 9 }],
+  ]);
+});
+
+test("ADR-0003 §8 名前の値を入れたものを作る。元が物でなければ、その値だけを持つ", () => {
+  expect(withField({ a: 1, b: 2 }, "b", 3)).toEqual({ a: 1, b: 3 });
+  expect(withField(null, "a", 1)).toEqual({ a: 1 });
 });
