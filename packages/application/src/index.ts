@@ -1,4 +1,5 @@
 export type {
+  BoardRepository,
   CardFace,
   CardFaceProvider,
   Clock,
@@ -72,3 +73,4 @@ export {
   type PlacementInput,
   type PlacementView,
 } from "./placement/placement";
+export { loadBoard, saveBoard } from "./play/board-document";

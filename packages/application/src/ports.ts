@@ -25,6 +25,18 @@ export interface SettingsRepository {
 }
 
 /**
+ * Keeps the board handed from the placement memory to the play (ADR-0003
+ * §3, ADR-0004 §8), as one saved document. Checking it is application's
+ * job, as for the settings.
+ */
+export interface BoardRepository {
+  /** The saved document, or undefined when none is saved or it is unreadable. */
+  load(): Promise<unknown>;
+  /** Saves the document in place of the one before. */
+  save(document: unknown): Promise<"saved" | "failed">;
+}
+
+/**
  * What a taking card shows. For now a face is text only: the provisional
  * faces show the poem number (the cloud session's brief §4). The real faces
  * come in stage 5 by swapping the adapter.

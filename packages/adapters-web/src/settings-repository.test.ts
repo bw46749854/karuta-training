@@ -1,7 +1,10 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { settingsRepositoryContract } from "./test-support/contracts";
-import { webSettingsRepository } from "./settings-repository";
+import { documentRepositoryContract } from "./test-support/contracts";
+import {
+  webBoardRepository,
+  webSettingsRepository,
+} from "./settings-repository";
 
 beforeEach(() => {
   localStorage.clear();
@@ -11,7 +14,23 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-settingsRepositoryContract(() => webSettingsRepository(localStorage));
+documentRepositoryContract("SettingsRepository", () =>
+  webSettingsRepository(localStorage),
+);
+documentRepositoryContract("BoardRepository", () =>
+  webBoardRepository(localStorage),
+);
+
+test("仕様 08 §2.2 盤面と設定は、別々の保存データにする（ADR-0003 §3）", async () => {
+  await webSettingsRepository(localStorage).save({ settings: true });
+  await webBoardRepository(localStorage).save({ board: true });
+  await expect(webSettingsRepository(localStorage).load()).resolves.toEqual({
+    settings: true,
+  });
+  await expect(webBoardRepository(localStorage).load()).resolves.toEqual({
+    board: true,
+  });
+});
 
 test("ADR-0003 §5 保存した文書は、次に開いたときも読める", async () => {
   await webSettingsRepository(localStorage).save({ version: 1 });

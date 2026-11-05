@@ -2,6 +2,7 @@
 // the same tests. Each adapter's test file runs the contract of its port.
 // Test code only: it is left out of coverage and mutation testing.
 import type {
+  BoardRepository,
   CardFaceProvider,
   Clock,
   Random,
@@ -78,22 +79,26 @@ export function randomContract(make: () => Random): void {
   });
 }
 
-/** make() gives a store with nothing saved yet. */
-export function settingsRepositoryContract(
-  make: () => SettingsRepository,
+/**
+ * The stores of saved documents (SettingsRepository, BoardRepository) keep
+ * the same contract. make() gives a store with nothing saved yet.
+ */
+export function documentRepositoryContract(
+  name: string,
+  make: () => SettingsRepository | BoardRepository,
 ): void {
-  test("契約 SettingsRepository：何も保存していなければ、読むと undefined", async () => {
+  test(`契約 ${name}：何も保存していなければ、読むと undefined`, async () => {
     await expect(make().load()).resolves.toBeUndefined();
   });
 
-  test("契約 SettingsRepository：保存した文書を、そのまま読める", async () => {
+  test(`契約 ${name}：保存した文書を、そのまま読める`, async () => {
     const repository = make();
     const document = { version: 1, settings: { a: [true, 2, "3"] } };
     await expect(repository.save(document)).resolves.toBe("saved");
     await expect(repository.load()).resolves.toEqual(document);
   });
 
-  test("契約 SettingsRepository：保存すると、前の文書と入れ替わる", async () => {
+  test(`契約 ${name}：保存すると、前の文書と入れ替わる`, async () => {
     const repository = make();
     await repository.save({ version: 1, first: true });
     await repository.save({ version: 1, second: true });
