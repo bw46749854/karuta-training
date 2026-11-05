@@ -7,9 +7,10 @@ import {
 } from "@karuta/adapters-web";
 import {
   CardFlowScreen,
+  MultipleCardFlowScreen,
   SettingsScreen,
   TopScreen,
-  type CardFlowPorts,
+  type PracticePorts,
   type TopEntry,
 } from "@karuta/ui";
 import "@karuta/ui/styles.css";
@@ -19,7 +20,7 @@ import { createRoot } from "react-dom/client";
 // The composition root: which adapters the screens use, and which screen is
 // open. Each screen has its name after "#" (spec 04 §3.2).
 const settings = webSettingsRepository(localStorage);
-const cardFlowPorts: CardFlowPorts = {
+const practicePorts: PracticePorts = {
   settings,
   random: webRandom(),
   clock: webClock(),
@@ -30,6 +31,7 @@ const cardFlowPorts: CardFlowPorts = {
 const HASHES = {
   top: "#/",
   "card-flow": "#/card-flow",
+  multiple: "#/multiple",
   settings: "#/settings",
 } as const;
 
@@ -40,6 +42,8 @@ function currentScreen(): Screen {
   switch (location.hash) {
     case HASHES["card-flow"]:
       return "card-flow";
+    case HASHES.multiple:
+      return "multiple";
     case HASHES.settings:
       return "settings";
     default:
@@ -65,7 +69,11 @@ function App(): ReactNode {
   };
   switch (screen) {
     case "card-flow":
-      return <CardFlowScreen ports={cardFlowPorts} onBackToTop={backToTop} />;
+      return <CardFlowScreen ports={practicePorts} onBackToTop={backToTop} />;
+    case "multiple":
+      return (
+        <MultipleCardFlowScreen ports={practicePorts} onBackToTop={backToTop} />
+      );
     case "settings":
       return <SettingsScreen repository={settings} onBackToTop={backToTop} />;
     case "top":

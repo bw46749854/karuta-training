@@ -69,7 +69,10 @@ async function setUp(page: Page, settings: CardFlowSettings): Promise<void> {
   await expect(page.getByRole("status")).toHaveText(S.saved);
   await page.getByRole("button", { name: WORDING.common.backToTop }).click();
   await page
-    .getByRole("button", { name: WORDING.top.open["card-flow"] })
+    .getByRole("button", {
+      name: WORDING.top.open["card-flow"],
+      exact: true,
+    })
     .click();
   await expect(
     page.getByRole("heading", { level: 1, name: C.title }),
@@ -219,7 +222,10 @@ test("仕様 05 §2.2 B-26 一度も保存していなければ、設定画面�
 }) => {
   await page.goto("/");
   await page
-    .getByRole("button", { name: WORDING.top.open["card-flow"] })
+    .getByRole("button", {
+      name: WORDING.top.open["card-flow"],
+      exact: true,
+    })
     .click();
   await expect(progress(page, 0, 100)).toBeVisible();
 });

@@ -179,3 +179,36 @@ input[type="checkbox"] {
   padding: 0;
   list-style: none;
 }
+
+/* Spec 06 §3.3: three columns by two rows; upside down turns the frame. */
+.card-frame {
+  /* ADR-0007 §7: two rows of cards fit a short screen without scrolling. */
+  --card-height: clamp(88px, calc((100dvh - 160px) / 2 - 4px), 146px);
+  --card-width: calc(var(--card-height) * 106 / 146);
+
+  display: grid;
+  grid-template-columns: repeat(3, var(--card-width));
+  grid-template-rows: repeat(2, var(--card-height));
+  gap: 8px;
+}
+
+.card-frame .taking-card {
+  width: var(--card-width);
+  height: var(--card-height);
+  font-size: calc(var(--card-height) * 0.22);
+}
+
+@media (max-height: 500px) {
+  .screen-header h1 {
+    margin: 4px 0;
+    font-size: 1.5em;
+  }
+}
+
+.card-frame.upside-down {
+  transform: scale(-1, -1);
+}
+
+.taking-card.blank {
+  background: #ffffff;
+}

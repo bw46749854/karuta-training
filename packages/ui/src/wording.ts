@@ -23,6 +23,7 @@ export const WORDING = {
     title: "競技かるた トレーニング",
     open: {
       "card-flow": "札流し",
+      multiple: "札流し（複数枚）",
       settings: "設定",
     },
   },
@@ -69,6 +70,19 @@ export const WORDING = {
       } satisfies Record<"unread" | Outcome, string>;
       const change = changed ? (finished ? "変化" : "変化中") : "初期";
       return `${names[status]}・${change}`;
+    },
+  },
+  /** Spec 06 §10. The rest is as in the card flow. */
+  multiple: {
+    title: "札流し（複数枚）",
+    hiddenCard: (position: number): string =>
+      `伏せた札（位置 ${String(position)}）`,
+    wrong: "不正解",
+    /** Spec 06 §5.2: inputs that are not taken. */
+    notices: {
+      "separators-only": "区切りの文字だけでは、答えになりません。",
+      "too-many":
+        "答えが札の枚数より多いので、受け付けませんでした。札の枚数までにしてください。",
     },
   },
   /** Spec 04 §4 to §11. */

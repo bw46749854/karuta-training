@@ -3,7 +3,7 @@ import { ScreenFrame } from "./frame";
 import { WORDING } from "./wording";
 
 /** The screens the top screen opens, in its order (spec 04 §2.2). */
-export const TOP_ENTRIES = ["card-flow", "settings"] as const;
+export const TOP_ENTRIES = ["card-flow", "multiple", "settings"] as const;
 
 export type TopEntry = (typeof TOP_ENTRIES)[number];
 

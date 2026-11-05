@@ -51,6 +51,23 @@ for (const size of SIZES) {
       }
     });
 
+    test(`ADR-0007 §7 仕様 06 §3 札流し（複数枚）の、札・入力欄・ボタン・判定が、スクロールせずに1画面に収まる（${size.name}）`, async ({
+      page,
+    }) => {
+      await page.goto("/#/multiple");
+      await page.getByRole("img").first().waitFor();
+      const cards = await page.getByRole("img").all();
+      for (const part of [
+        ...cards,
+        page.getByRole("textbox", { name: C.input }),
+        page.getByRole("button", { name: C.answer }),
+        page.getByRole("button", { name: C.skip }),
+        page.getByRole("status"),
+      ]) {
+        await expectInside(page, part, size);
+      }
+    });
+
     test(`ADR-0007 §7 仕様 04 §4.3 設定画面は、横にはみ出さない（${size.name}）`, async ({
       page,
     }) => {

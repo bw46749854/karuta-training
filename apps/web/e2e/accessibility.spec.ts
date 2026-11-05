@@ -7,6 +7,7 @@ for (const [name, path] of [
   ["トップ画面", "/"],
   ["設定画面", "/#/settings"],
   ["札流しの画面", "/#/card-flow"],
+  ["札流し（複数枚）の画面", "/#/multiple"],
 ] as const) {
   test(`設計方針 §4 アクセシビリティ：${name}に重大な違反がない`, async ({
     page,
