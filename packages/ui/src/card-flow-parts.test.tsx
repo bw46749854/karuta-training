@@ -57,7 +57,9 @@ test("仕様 05 §8.1 §8.3 §8.5 一覧は初めは閉じていて、開くと�
   expect(screen.queryByRole("region", { name: C.list })).toBeNull();
 });
 
-test("仕様 05 §3.3 札は、出す札の札面だけを読み込み、逆さまなら回す印を付ける", async () => {
+// Whether an upside-down card looks turned is checked in the browser, by
+// its computed style (the card flow's acceptance tests), not by its class.
+test("仕様 05 §3.3 札は、出す札の札面だけを読み込んで出す", async () => {
   const asked: number[] = [];
   const faces: CardFaceProvider = {
     face: (poem) => {
@@ -71,6 +73,5 @@ test("仕様 05 §3.3 札は、出す札の札面だけを読み込み、逆さ�
   render(<TakingCard faces={faces} poem={MU.id} orientation="upside-down" />);
   const card = screen.getByRole("img", { name: C.card(87) });
   expect(await within(card).findByText("face 87")).toBeTruthy();
-  expect(card.className).toContain("upside-down");
   expect(asked).toEqual([87]);
 });
