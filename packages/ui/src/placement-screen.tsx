@@ -1,9 +1,12 @@
 import {
   boardShapeFor,
   cardWidthFor,
+  loadBoard,
   PLACEMENT,
   placementInput,
+  placementInputOn,
   placementQuestionsFor,
+  saveBoard,
   type Area,
   type PlacementCommand,
   type PlacementInput,
@@ -12,7 +15,7 @@ import {
   type Session,
   type Settings,
 } from "@karuta/application";
-import type { BoardShape } from "@karuta/domain";
+import type { Board, BoardShape } from "@karuta/domain";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { BoardView } from "./board-view";
 import { ScreenFrame } from "./frame";
@@ -40,6 +43,36 @@ function useBoardShape(
   return shape;
 }
 
+/**
+ * Spec 08 §7.5: back from the play, the saved board. Undefined while it is
+ * being read; null when not back from the play, or when there is none.
+ */
+function useResumedBoard(
+  ports: PracticePorts,
+  resume: boolean,
+  onResumed: () => void,
+): Board | null | undefined {
+  const [board, setBoard] = useState<Board | null | undefined>(
+    resume ? undefined : null,
+  );
+  useEffect(() => {
+    if (board !== undefined) {
+      return undefined;
+    }
+    let open = true;
+    void loadBoard(ports.boards).then((loaded) => {
+      if (open) {
+        setBoard(loaded ?? null);
+        onResumed();
+      }
+    });
+    return () => {
+      open = false;
+    };
+  }, [board, ports.boards, onResumed]);
+  return board;
+}
+
 interface Running {
   readonly session: Session<PlacementCommand, PlacementView>;
   readonly view: PlacementView;
@@ -54,6 +87,8 @@ function Layout(props: {
   readonly size: Area | undefined;
   readonly area: (element: HTMLDivElement | null) => void;
   readonly onRedeal: () => void;
+  readonly onPlay: (board: Board) => void;
+  readonly playFailed: boolean;
 }): ReactNode {
   const { running, ports, shape, size } = props;
   const dispatch = (command: PlacementCommand) => {
@@ -64,10 +99,17 @@ function Layout(props: {
       <div className="board-area" ref={props.area}>
         {running === undefined || size === undefined ? null : (
           <BoardView
-            view={running.view}
+            shape={running.view.shape}
+            cells={running.view.cells}
             faces={ports.faces}
             cardWidth={cardWidthFor(shape, size)}
-            dispatch={dispatch}
+            use={{
+              usable: running.view.actions.flip || running.view.actions.select,
+              pressed: running.view.actions.select,
+              onCell: (cell) => {
+                dispatch({ kind: "flip-cell", cell });
+              },
+            }}
           />
         )}
       </div>
@@ -75,20 +117,56 @@ function Layout(props: {
         // The same width as the panel, so the board's area does not change.
         <div className="placement-panel" />
       ) : (
-        <PlacementPanel
-          view={running.view}
-          dispatch={dispatch}
-          onStart={() => {
-            dispatch({
-              kind: "start",
-              questions: placementQuestionsFor(running.input, ports.random),
-            });
-          }}
-          onRedeal={props.onRedeal}
-        />
+        <Panel {...props} running={running} dispatch={dispatch} />
       )}
     </div>
   );
+}
+
+function Panel(props: {
+  readonly running: Running;
+  readonly ports: PracticePorts;
+  readonly dispatch: (command: PlacementCommand) => void;
+  readonly onRedeal: () => void;
+  readonly onPlay: (board: Board) => void;
+  readonly playFailed: boolean;
+}): ReactNode {
+  const { running, dispatch } = props;
+  return (
+    <PlacementPanel
+      view={running.view}
+      dispatch={dispatch}
+      onStart={() => {
+        dispatch({
+          kind: "start",
+          questions: placementQuestionsFor(running.input, props.ports.random),
+        });
+      }}
+      onRedeal={props.onRedeal}
+      onPlay={() => {
+        props.onPlay(running.input.board);
+      }}
+      playFailed={props.playFailed}
+    />
+  );
+}
+
+/** Spec 08 §2.1: saves the board, then opens the play. */
+function useSaveForPlay(
+  ports: PracticePorts,
+  onPlay: () => void,
+): readonly [boolean, (board: Board) => void] {
+  const [failed, setFailed] = useState(false);
+  const play = (board: Board) => {
+    void saveBoard(ports.boards, board).then((result) => {
+      if (result === "saved") {
+        onPlay();
+      } else {
+        setFailed(true);
+      }
+    });
+  };
+  return [failed, play];
 }
 
 /**
@@ -98,16 +176,22 @@ function Layout(props: {
 function Practice(props: {
   readonly ports: PracticePorts;
   readonly shape: BoardShape;
+  /** The board back from the play, used for the first round only. */
+  readonly resumed: Board | null;
   readonly landscape: boolean;
   readonly size: Area | undefined;
   readonly area: (element: HTMLDivElement | null) => void;
+  readonly onPlay: () => void;
 }): ReactNode {
-  const { ports, shape } = props;
+  const { ports, shape, resumed } = props;
   const [round, setRound] = useState(0);
+  const [playFailed, play] = useSaveForPlay(ports, props.onPlay);
   const inputOf = useMemo(
     () => (settings: Settings, random: Random) =>
-      placementInput(settings, shape, random),
-    [shape],
+      round === 0 && resumed !== null
+        ? placementInputOn(settings, resumed)
+        : placementInput(settings, shape, random),
+    [shape, resumed, round],
   );
   const { session, view, input } = usePracticeSession(PLACEMENT, inputOf, {
     ...ports,
@@ -130,6 +214,8 @@ function Practice(props: {
       onRedeal={() => {
         setRound(round + 1);
       }}
+      onPlay={play}
+      playFailed={playFailed}
     />
   );
 }
@@ -137,12 +223,18 @@ function Practice(props: {
 /** Spec 07: the placement memory screen, landscape only (ADR-0007 §3). */
 export function PlacementScreen(props: {
   readonly ports: PracticePorts;
+  /** Spec 08 §7.5: opened again from the play, with the saved board. */
+  readonly resume: boolean;
+  readonly onResumed: () => void;
+  readonly onPlay: () => void;
   readonly onBackToTop: () => void;
 }): ReactNode {
   const landscape = useLandscape();
   const [area, setArea] = useState<HTMLDivElement | null>(null);
   const size = useElementSize(area);
-  const shape = useBoardShape(landscape, size);
+  const resumed = useResumedBoard(props.ports, props.resume, props.onResumed);
+  const measured = useBoardShape(landscape, size);
+  const shape = resumed?.shape ?? measured;
   // The panel is there while measuring too, so the board's area is the
   // same as when the board is shown (spec 07 §2.3).
   const measuring = (
@@ -151,6 +243,13 @@ export function PlacementScreen(props: {
       <div className="placement-panel" />
     </div>
   );
+  if (resumed === undefined) {
+    return (
+      <ScreenFrame title={P.title} onBackToTop={props.onBackToTop}>
+        {null}
+      </ScreenFrame>
+    );
+  }
   return (
     <ScreenFrame title={P.title} onBackToTop={props.onBackToTop}>
       {shape === null ? (
@@ -165,9 +264,11 @@ export function PlacementScreen(props: {
         <Practice
           ports={props.ports}
           shape={shape}
+          resumed={resumed}
           landscape={landscape}
           size={size}
           area={setArea}
+          onPlay={props.onPlay}
         />
       )}
     </ScreenFrame>

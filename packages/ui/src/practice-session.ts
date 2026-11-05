@@ -1,6 +1,7 @@
 import {
   loadSettings,
   runSession,
+  type BoardRepository,
   type CardFaceProvider,
   type Clock,
   type PracticeMode,
@@ -15,6 +16,8 @@ import { useEffect, useState } from "react";
 /** The ports the practice screens use, chosen by the composition root. */
 export interface PracticePorts {
   readonly settings: SettingsRepository;
+  /** The board handed from the placement memory to the play (spec 08 §2). */
+  readonly boards: BoardRepository;
   readonly random: Random;
   readonly clock: Clock;
   readonly scheduler: Scheduler;

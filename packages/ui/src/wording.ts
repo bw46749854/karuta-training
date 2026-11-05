@@ -105,6 +105,23 @@ export const WORDING = {
     hiddenCell: (row: number, column: number): string =>
       `${String(row)}段目 ${String(column)}列目 伏せた札`,
   },
+  /** Spec 08 §9. Skip and next are as in the card flow. */
+  play: {
+    title: "実践練習",
+    start: "プレイ開始",
+    finish: "プレイ終了",
+    toPlacement: "配置暗記へ",
+    noBoard: "盤面がありません。配置暗記で札を配ってから始めてください。",
+    saveFailed: "盤面を保存できませんでした。",
+    allRead: "すべての札を読みました。",
+    letters: (letters: string): string => `読み：${letters}`,
+    correct: "正解",
+    dead: "正解（空札）",
+    wrongCard: "違う札を取りました",
+    missed: "取れませんでした",
+    early: (seconds: number): string => `早い：${seconds.toFixed(2)} 秒`,
+    late: (seconds: number): string => `遅い：${seconds.toFixed(2)} 秒`,
+  },
   /** Spec 04 §4 to §11. */
   settings: {
     title: "設定",

@@ -1,8 +1,5 @@
-import type {
-  CardFaceProvider,
-  PlacementCommand,
-  PlacementView,
-} from "@karuta/application";
+import type { CardFaceProvider } from "@karuta/application";
+import type { BoardShape, PoemId } from "@karuta/domain";
 import type { ReactNode } from "react";
 import { TakingCard } from "./card-face";
 import { WORDING } from "./wording";
@@ -12,36 +9,52 @@ const P = WORDING.placement;
 // ADR-0007 §1: cards keep the ratio of a taking card, 53 by 73.
 const HEIGHT_PER_WIDTH = 73 / 53;
 
-type Cell = PlacementView["cells"][number];
+/** One cell of the board, as the placement memory and the play show it. */
+export interface BoardCell {
+  readonly index: number;
+  readonly row: number;
+  readonly column: number;
+  readonly side: "opponent" | "own";
+  readonly poem: PoemId | null;
+  readonly faceUp: boolean;
+  readonly selected: boolean;
+}
 
-function cellName(cell: Cell & { readonly poem: number }): string {
+/** What the board does when a card is pressed (spec 07 §4, §5; spec 08 §4). */
+export interface BoardUse {
+  /** Whether the cards can be pressed now. */
+  readonly usable: boolean;
+  /** Whether pressed shows which cells are chosen or taken. */
+  readonly pressed: boolean;
+  readonly onCell: (index: number) => void;
+}
+
+function cellName(cell: BoardCell & { readonly poem: PoemId }): string {
   return cell.faceUp
     ? P.cardCell(cell.row, cell.column, cell.poem)
     : P.hiddenCell(cell.row, cell.column);
 }
 
-/** One cell: nothing, or a card that can be turned over or chosen. */
-function BoardCell(props: {
-  readonly cell: Cell;
-  readonly view: PlacementView;
+/** One cell: nothing, or a card that can be pressed. */
+function Cell(props: {
+  readonly cell: BoardCell;
   readonly faces: CardFaceProvider;
-  readonly dispatch: (command: PlacementCommand) => void;
+  readonly use: BoardUse;
 }): ReactNode {
-  const { cell, view } = props;
+  const { cell, use } = props;
   const { poem } = cell;
   if (poem === null) {
     return <div className="board-cell" />;
   }
-  const { flip, select } = view.actions;
   return (
     <button
       type="button"
       className={`board-cell${cell.selected ? " selected" : ""}`}
       aria-label={cellName({ ...cell, poem })}
-      aria-pressed={select ? cell.selected : undefined}
-      disabled={!flip && !select}
+      aria-pressed={use.pressed ? cell.selected : undefined}
+      disabled={!use.usable}
       onClick={() => {
-        props.dispatch({ kind: "flip-cell", cell: cell.index });
+        use.onCell(cell.index);
       }}
     >
       {cell.faceUp ? (
@@ -59,13 +72,14 @@ function BoardCell(props: {
 
 /** Spec 07 §3.3: the opponent's side above the player's, a gap between. */
 export function BoardView(props: {
-  readonly view: PlacementView;
+  readonly shape: BoardShape;
+  readonly cells: readonly BoardCell[];
   readonly faces: CardFaceProvider;
   readonly cardWidth: number;
-  readonly dispatch: (command: PlacementCommand) => void;
+  readonly use: BoardUse;
 }): ReactNode {
-  const { view, cardWidth } = props;
-  const size = { width: cardWidth, height: cardWidth * HEIGHT_PER_WIDTH };
+  const { cardWidth } = props;
+  const height = cardWidth * HEIGHT_PER_WIDTH;
   return (
     <div className="board" role="group" aria-label={P.board}>
       {(["opponent", "own"] as const).map((side) => (
@@ -73,20 +87,19 @@ export function BoardView(props: {
           key={side}
           className="board-side"
           style={{
-            gridTemplateColumns: `repeat(${String(view.shape.columns)}, ${String(size.width)}px)`,
-            gridAutoRows: `${String(size.height)}px`,
+            gridTemplateColumns: `repeat(${String(props.shape.columns)}, ${String(cardWidth)}px)`,
+            gridAutoRows: `${String(height)}px`,
             fontSize: `${String(cardWidth * 0.3)}px`,
           }}
         >
-          {view.cells
+          {props.cells
             .filter((cell) => cell.side === side)
             .map((cell) => (
-              <BoardCell
+              <Cell
                 key={cell.index}
                 cell={cell}
-                view={view}
                 faces={props.faces}
-                dispatch={props.dispatch}
+                use={props.use}
               />
             ))}
         </div>

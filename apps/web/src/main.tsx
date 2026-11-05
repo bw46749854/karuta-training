@@ -1,5 +1,6 @@
 import {
   numberCardFaces,
+  webBoardRepository,
   webClock,
   webRandom,
   webScheduler,
@@ -9,6 +10,7 @@ import {
   CardFlowScreen,
   MultipleCardFlowScreen,
   PlacementScreen,
+  PlayScreen,
   SettingsScreen,
   TopScreen,
   type PracticePorts,
@@ -23,6 +25,7 @@ import { createRoot } from "react-dom/client";
 const settings = webSettingsRepository(localStorage);
 const practicePorts: PracticePorts = {
   settings,
+  boards: webBoardRepository(localStorage),
   random: webRandom(),
   clock: webClock(),
   scheduler: webScheduler(),
@@ -34,25 +37,26 @@ const HASHES = {
   "card-flow": "#/card-flow",
   multiple: "#/multiple",
   placement: "#/placement",
+  // Spec 08 §7.5: back from the play, with the saved board.
+  "placement-again": "#/placement/again",
+  play: "#/play",
   settings: "#/settings",
 } as const;
 
 type Screen = keyof typeof HASHES;
 
+const SCREENS = new Map<string, string>(
+  Object.entries(HASHES).map(([screen, hash]) => [hash, screen]),
+);
+
+function isScreen(name: string | undefined): name is Screen {
+  return name !== undefined && Object.hasOwn(HASHES, name);
+}
+
 // Spec 04 §3.3: an unknown name opens the top screen.
 function currentScreen(): Screen {
-  switch (location.hash) {
-    case HASHES["card-flow"]:
-      return "card-flow";
-    case HASHES.multiple:
-      return "multiple";
-    case HASHES.placement:
-      return "placement";
-    case HASHES.settings:
-      return "settings";
-    default:
-      return "top";
-  }
+  const screen = SCREENS.get(location.hash);
+  return isScreen(screen) ? screen : "top";
 }
 
 function subscribe(onChange: () => void): () => void {
@@ -64,6 +68,28 @@ function subscribe(onChange: () => void): () => void {
 
 function open(screen: Screen): void {
   location.hash = HASHES[screen];
+}
+
+// Spec 08 §7.6: once back on the saved board, a reload deals anew.
+function resumed(): void {
+  history.replaceState(null, "", HASHES.placement);
+}
+
+function placement(resume: boolean): ReactNode {
+  return (
+    <PlacementScreen
+      key="placement"
+      ports={practicePorts}
+      resume={resume}
+      onResumed={resumed}
+      onPlay={() => {
+        open("play");
+      }}
+      onBackToTop={() => {
+        open("top");
+      }}
+    />
+  );
 }
 
 function App(): ReactNode {
@@ -79,7 +105,22 @@ function App(): ReactNode {
         <MultipleCardFlowScreen ports={practicePorts} onBackToTop={backToTop} />
       );
     case "placement":
-      return <PlacementScreen ports={practicePorts} onBackToTop={backToTop} />;
+      return placement(false);
+    case "placement-again":
+      return placement(true);
+    case "play":
+      return (
+        <PlayScreen
+          ports={practicePorts}
+          onOpenPlacement={() => {
+            open("placement");
+          }}
+          onFinish={() => {
+            open("placement-again");
+          }}
+          onBackToTop={backToTop}
+        />
+      );
     case "settings":
       return <SettingsScreen repository={settings} onBackToTop={backToTop} />;
     case "top":

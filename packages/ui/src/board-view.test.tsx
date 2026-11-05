@@ -51,10 +51,15 @@ function renderBoard(view: PlacementView): PlacementCommand[] {
   const sent: PlacementCommand[] = [];
   render(
     <BoardView
-      view={view}
+      shape={view.shape}
+      cells={view.cells}
       faces={faces}
       cardWidth={44}
-      dispatch={(command) => sent.push(command)}
+      use={{
+        usable: view.actions.flip || view.actions.select,
+        pressed: view.actions.select,
+        onCell: (cell) => sent.push({ kind: "flip-cell", cell }),
+      }}
     />,
   );
   return sent;

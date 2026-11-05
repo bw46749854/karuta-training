@@ -7,6 +7,7 @@ import { WORDING } from "./wording";
 const C = WORDING.cardFlow;
 const P = WORDING.placement;
 const S = WORDING.settings;
+const Y = WORDING.play;
 
 type Dispatch = (command: PlacementCommand) => void;
 
@@ -26,6 +27,7 @@ function Buttons(props: {
   readonly dispatch: Dispatch;
   readonly onStart: () => void;
   readonly onRedeal: () => void;
+  readonly onPlay: () => void;
 }): ReactNode {
   const { actions } = props.view;
   const { dispatch } = props;
@@ -41,6 +43,8 @@ function Buttons(props: {
         dispatch({ kind: "invert" });
       })}
       {button(P.redeal, actions.redeal, props.onRedeal)}
+      {/* Spec 08 §2.1: to the play, while memorizing. */}
+      {button(Y.start, actions.start, props.onPlay)}
       {button(C.answer, actions.answer, () => {
         dispatch({ kind: "answer" });
       })}
@@ -64,6 +68,9 @@ export function PlacementPanel(props: {
   readonly dispatch: Dispatch;
   readonly onStart: () => void;
   readonly onRedeal: () => void;
+  readonly onPlay: () => void;
+  /** Set when the board could not be saved for the play. */
+  readonly playFailed: boolean;
 }): ReactNode {
   const { view, dispatch } = props;
   const disabled = !view.actions.flip;
@@ -73,7 +80,7 @@ export function PlacementPanel(props: {
         <p className="question">{P.question(view.question)}</p>
       )}
       {view.progress === null ? null : <Progress {...view.progress} />}
-      <p role="status">{statusText(view)}</p>
+      <p role="status">{props.playFailed ? Y.saveFailed : statusText(view)}</p>
       <Buttons {...props} />
       <ToggleList
         id="placement-groups"

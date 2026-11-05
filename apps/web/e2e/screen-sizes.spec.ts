@@ -83,6 +83,31 @@ async function placementFits(page: Page, size: Size): Promise<void> {
   );
 }
 
+async function playFits(page: Page, size: Size): Promise<void> {
+  await page.goto("/#/placement");
+  if (size.width < size.height) {
+    await expect(page.getByText(P.rotate)).toBeVisible();
+    return;
+  }
+  await page.getByRole("button", { name: /段目/ }).first().waitFor();
+  await page
+    .getByRole("button", { name: WORDING.play.start, exact: true })
+    .click();
+  await page.getByText(/^読み：/).waitFor();
+  const cells = await page.getByRole("button", { name: /段目/ }).all();
+  expect(cells.length).toBeGreaterThan(0);
+  await expectInside(
+    page,
+    [
+      ...cells,
+      page.getByText(/^読み：/),
+      page.getByRole("button", { name: WORDING.play.finish, exact: true }),
+      page.getByRole("status"),
+    ],
+    size,
+  );
+}
+
 async function settingsFits(page: Page, size: Size): Promise<void> {
   await page.goto("/#/settings");
   await page
@@ -112,6 +137,12 @@ for (const size of SIZES) {
       page,
     }) => {
       await placementFits(page, size);
+    });
+
+    test(`ADR-0007 §3 §7 仕様 08 §2.6 実践練習は、横向きなら盤面・読み・ボタン・判定が1画面に収まる（${size.name}）`, async ({
+      page,
+    }) => {
+      await playFits(page, size);
     });
 
     test(`ADR-0007 §7 仕様 04 §4.3 設定画面は、横にはみ出さない（${size.name}）`, async ({
