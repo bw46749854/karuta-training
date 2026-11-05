@@ -74,3 +74,11 @@ export {
   type PlacementView,
 } from "./placement/placement";
 export { loadBoard, saveBoard } from "./play/board-document";
+export { playInput } from "./play/input";
+export {
+  PLAY,
+  type PlayCommand,
+  type PlayInput,
+  type PlayJudgement,
+  type PlayView,
+} from "./play/play";
