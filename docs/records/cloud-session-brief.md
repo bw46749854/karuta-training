@@ -59,7 +59,7 @@
 - 承認済みの文書（ADR、設計方針、仕様 01〜03、全体計画）の変更が要るとき。新しい ADR が要るなら「提案中」の状態で書くだけにして、それに依存しない作り方で進める。
 - 新しい実行時依存の追加。
 - 根拠のない新しい機能。思いついたものは §8 の「提案」に書く。
-- `main` への push とマージ、プルリクエストの作成、タグ、GitHub の設定の変更、公開。
+- `main` への push とマージ、プルリクエストの作成、タグ、GitHub の設定の変更、公開。クラウドの環境はどのブランチへの push も止めない。`main` の保護に頼らず、自分で守る。
 - remote `karutaTraining` への push。サンプルの報告フォームへの送信。
 
 ## 6. ローカルのメモにしかなかった規則
@@ -90,7 +90,10 @@
 - **Node**：リポジトリは 24 以上が必要で、環境には 20〜22 しかない。`nodejs.org` から 24 系を入れ、`PATH` の先頭に置く。
 - **pnpm**：`packageManager` のとおり 12.16.1 を使う（`corepack enable pnpm` か `npm i -g pnpm@12.16.1`）。その後 `pnpm install --frozen-lockfile`。
 - **E2E のブラウザ**：Playwright の配布元は、既定の許可リストにない見込み。`playwright install` が失敗したら、入っている `/usr/bin/google-chrome`（`CHROME_PATH`）で `chromium` のプロジェクトだけを動かす。設定を変えるなら、`CHROME_PATH` があるときだけ効く形にする。Firefox・WebKit・iPad は CI に任せる。
-- **CI**：`.github/workflows/ci.yml` は登録されているが、実行の履歴がまだ 0 件（2026-11-05 時点）。最初の push の後に `gh api repos/bw46749854/karuta-training/actions/runs` で確かめる。失敗したら直す。動かないなら §8 に書き、手元の結果で進める。
+- **CI**：`.github/workflows/ci.yml` は登録されているが、実行の履歴がまだ 0 件。2026-11-05 13:45 JST の `dev` への push でも動かず、check suite も作られなかった。GitHub に障害はなく、原因は分かっていない。
+  - 最初の push の後に `gh api repos/bw46749854/karuta-training/actions/runs` で一度だけ確かめる。動いて失敗したら直す。
+  - 動かなければ、原因を調べずに進める。リポジトリの設定を見ないと分からない可能性が高く、時間を使う価値がない。
+  - その場合、Firefox・WebKit・iPad は確かめられない。§8 の「確かめていないこと」に書く。ユーザーが手元の `pnpm verify` で確かめる。
 - **GitHub の操作**：`gh pr` などの GraphQL は使えない。`gh api` を使う。タグは push できない。
 - **時間のかかるコマンド**：手前で待てるのは既定で 2 分。`pnpm verify` はバックグラウンドで動かす（手元の実測は、今の規模で 2 分 45 秒。画面が増えると E2E の分だけ延びる）。
 - **コミット前のチェック**：フックが動かない環境もあるので、`pnpm check:fast` と `pnpm test` を自分で動かす。`pnpm verify` は画面を終えるたびに動かす。
