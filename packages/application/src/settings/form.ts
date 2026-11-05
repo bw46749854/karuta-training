@@ -11,6 +11,27 @@ import { fieldOf, fieldsOf, type ItemForm } from "./items";
 
 // What the settings screen shows, made from the definition (spec 04 §10).
 
+/**
+ * "group.item" of every on/off, whole-number and choice item. The wording
+ * table names each of them, so one left out is a type error (ADR-0005 §2).
+ */
+export type FieldPath = {
+  [Group in keyof Settings]: {
+    [Name in keyof Settings[Group]]: Settings[Group][Name] extends
+      boolean | number | string
+      ? `${Group}.${Name & string}`
+      : never;
+  }[keyof Settings[Group]];
+}[keyof Settings];
+
+/** Every option of the choice items, which the wording table names too. */
+export type ChoiceOption = {
+  [Group in keyof Settings]: Extract<
+    Settings[Group][keyof Settings[Group]],
+    string
+  >;
+}[keyof Settings];
+
 /** One input of an on/off, whole-number or choice item. */
 export type FormField =
   | { readonly kind: "flag"; readonly path: string; readonly value: boolean }

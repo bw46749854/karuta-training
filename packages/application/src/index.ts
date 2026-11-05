@@ -38,6 +38,8 @@ export {
   LAYOUT_SHAPES,
   poemSelection,
   settingsForm,
+  type ChoiceOption,
+  type FieldPath,
   type FormField,
   type FormSection,
   type PoemSelectionView,

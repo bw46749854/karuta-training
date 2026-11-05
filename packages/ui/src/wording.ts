@@ -1,4 +1,9 @@
-import type { Outcome } from "@karuta/application";
+import type {
+  ChoiceOption,
+  FieldPath,
+  Outcome,
+  Settings,
+} from "@karuta/application";
 import type { UnconvertibleReason } from "@karuta/domain";
 
 // The one table of wording (ADR-0005). Screens and tests look words up here.
@@ -83,7 +88,7 @@ export const WORDING = {
       placement: "配置暗記",
       play: "実践練習",
       layouts: "札の配置",
-    },
+    } satisfies Record<keyof Settings | "layouts", string>,
     /** The name of each item, by its place in the definition. */
     items: {
       "common.limited": "決まり字を限定する（選んだ歌だけを出題する）",
@@ -111,7 +116,7 @@ export const WORDING = {
       "play.letterIntervalMs": "文字間隔（ミリ秒）",
       "play.autoNext": "回答後に自動で次へ進む",
       "play.waitMs": "待機時間（ミリ秒）",
-    } satisfies Record<string, string>,
+    } satisfies Record<FieldPath, string>,
     /** The words of each option of the choice items. */
     options: {
       random: "ランダム",
@@ -124,7 +129,7 @@ export const WORDING = {
       never: "しない",
       "when-correct": "正答時のみ",
       "when-wrong": "誤答時のみ",
-    } satisfies Record<string, string>,
+    } satisfies Record<ChoiceOption, string>,
     groups: "決まり字（グループ）",
     poems: "決まり字（個別）",
     selectAll: "すべて選ぶ",
