@@ -1,5 +1,17 @@
-import { webSettingsRepository } from "@karuta/adapters-web";
-import { SettingsScreen, TopScreen, type TopEntry } from "@karuta/ui";
+import {
+  numberCardFaces,
+  webClock,
+  webRandom,
+  webScheduler,
+  webSettingsRepository,
+} from "@karuta/adapters-web";
+import {
+  CardFlowScreen,
+  SettingsScreen,
+  TopScreen,
+  type CardFlowPorts,
+  type TopEntry,
+} from "@karuta/ui";
 import "@karuta/ui/styles.css";
 import { StrictMode, useSyncExternalStore, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
@@ -7,14 +19,32 @@ import { createRoot } from "react-dom/client";
 // The composition root: which adapters the screens use, and which screen is
 // open. Each screen has its name after "#" (spec 04 §3.2).
 const settings = webSettingsRepository(localStorage);
+const cardFlowPorts: CardFlowPorts = {
+  settings,
+  random: webRandom(),
+  clock: webClock(),
+  scheduler: webScheduler(),
+  faces: numberCardFaces(),
+};
 
-const HASHES = { top: "#/", settings: "#/settings" } as const;
+const HASHES = {
+  top: "#/",
+  "card-flow": "#/card-flow",
+  settings: "#/settings",
+} as const;
 
 type Screen = keyof typeof HASHES;
 
 // Spec 04 §3.3: an unknown name opens the top screen.
 function currentScreen(): Screen {
-  return location.hash === HASHES.settings ? "settings" : "top";
+  switch (location.hash) {
+    case HASHES["card-flow"]:
+      return "card-flow";
+    case HASHES.settings:
+      return "settings";
+    default:
+      return "top";
+  }
 }
 
 function subscribe(onChange: () => void): () => void {
@@ -34,6 +64,8 @@ function App(): ReactNode {
     open("top");
   };
   switch (screen) {
+    case "card-flow":
+      return <CardFlowScreen ports={cardFlowPorts} onBackToTop={backToTop} />;
     case "settings":
       return <SettingsScreen repository={settings} onBackToTop={backToTop} />;
     case "top":

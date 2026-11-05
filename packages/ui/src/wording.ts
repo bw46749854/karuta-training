@@ -1,3 +1,6 @@
+import type { Outcome } from "@karuta/application";
+import type { UnconvertibleReason } from "@karuta/domain";
+
 // The one table of wording (ADR-0005). Screens and tests look words up here.
 // Words are decided in each screen's spec and copied here; when the two
 // differ, the spec is right (ADR-0005 §5). The whole table is reviewed in
@@ -14,7 +17,53 @@ export const WORDING = {
   top: {
     title: "競技かるた トレーニング",
     open: {
+      "card-flow": "札流し",
       settings: "設定",
+    },
+  },
+  /** Spec 05 §9. */
+  cardFlow: {
+    title: "札流し",
+    progress: "進捗",
+    progressText: (finished: number, total: number): string =>
+      `${String(finished)} / ${String(total)}`,
+    card: (poem: number): string => `歌番号 ${String(poem)} の札`,
+    input: "決まり字",
+    answer: "答える",
+    skip: "スキップ",
+    next: "次へ",
+    restart: "やり直す",
+    correct: "正解",
+    wrong: (kimariji: string): string => `不正解：正解は ${kimariji}`,
+    /** Spec 05 §4.3, one for each reason (B-22). */
+    reasons: {
+      mixed: "かなとローマ字が混ざっています。",
+      "romaji-not-allowed": "ローマ字入力は許可されていません。",
+      "romaji-unconvertible": "かなに直せないローマ字です。",
+      "not-kana-or-romaji": "ひらがなかローマ字で入力してください。",
+    } satisfies Record<UnconvertibleReason, string>,
+    finished: "お疲れさまでした。全問終了です。",
+    list: "決まり字一覧",
+    openList: "決まり字一覧を開く",
+    closeList: "決まり字一覧を閉じる",
+    byAsked: "出題順に並べる",
+    byKimariji: "決まり字順に並べる",
+    row: (poem: number, kimariji: string): string =>
+      `#${threeDigits(poem)} ${kimariji}`,
+    /** Spec 05 §8.3: the status of a row, and whether it has changed. */
+    status: (
+      status: "unread" | Outcome,
+      changed: boolean,
+      finished: boolean,
+    ): string => {
+      const names = {
+        unread: "未読",
+        correct: "正解",
+        wrong: "誤答",
+        skipped: "スキップ",
+      } satisfies Record<"unread" | Outcome, string>;
+      const change = changed ? (finished ? "変化" : "変化中") : "初期";
+      return `${names[status]}・${change}`;
     },
   },
   /** Spec 04 §4 to §11. */

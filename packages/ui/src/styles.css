@@ -112,3 +112,70 @@ input[type="checkbox"] {
 .layout-cell {
   justify-self: center;
 }
+
+/* Spec 05: the card flow. The card keeps the ratio of a taking card. */
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress p {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.practice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 12px 0;
+}
+
+.card-area {
+  min-width: 106px;
+  min-height: 146px;
+}
+
+.taking-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 106px;
+  height: 146px;
+  font-size: 32px;
+  background: #fffdf5;
+  border: 2px solid #3d3d3d;
+  border-radius: 6px;
+}
+
+/* Spec 05 §3.3: upside down is the card turned half a circle. */
+.taking-card.upside-down {
+  transform: scale(-1, -1);
+}
+
+.answer-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.answer-form input[type="text"] {
+  min-height: 44px;
+  width: 10em;
+  font: inherit;
+}
+
+.controls [role="status"] {
+  min-height: 1.5em;
+}
+
+.kimariji-list ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  gap: 2px 16px;
+  padding: 0;
+  list-style: none;
+}
