@@ -124,6 +124,9 @@ test("ADR-0003 §8 種類の合わない値と、定義にない項目では、�
   expect(editField(editor, "cardFlow.waitMs", true)).toEqual(editor);
   expect(() => editField(editor, "cardFlow.unknown", true)).toThrow(RangeError);
   expect(() => editField(editor, "common.selected", true)).toThrow(RangeError);
+  for (const path of ["common", "unknown.limited", "common.limited.x"]) {
+    expect(() => editField(editor, path, true)).toThrow(RangeError);
+  }
 });
 
 test("仕様 04 §6.2 §6.3 グループを押すと、すべて選ぶか、すべて選ばれていればすべて外す", () => {

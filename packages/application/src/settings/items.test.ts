@@ -3,6 +3,7 @@ import { expect, test } from "vitest";
 import {
   choice,
   fieldOf,
+  fieldsOf,
   flag,
   group,
   integer,
@@ -128,4 +129,11 @@ test("仕様 04 §10 まとまりは、項目を書いた順に持つ", () => {
 test("ADR-0003 §8 名前の値を入れたものを作る。元が物でなければ、その値だけを持つ", () => {
   expect(withField({ a: 1, b: 2 }, "b", 3)).toEqual({ a: 1, b: 3 });
   expect(withField(null, "a", 1)).toEqual({ a: 1 });
+});
+
+test("仕様 04 §10 まとまりでない項目は、中に項目を持たない", () => {
+  expect(fieldsOf(flag(true).form)).toEqual([]);
+  expect(
+    fieldsOf(group((field) => ({ a: field("a", flag(true)) })).form),
+  ).toHaveLength(1);
 });

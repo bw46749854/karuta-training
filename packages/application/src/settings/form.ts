@@ -7,7 +7,7 @@ import {
 } from "@karuta/domain";
 import { SETTINGS, type Settings } from "./definition";
 import type { SettingsEditor } from "./editor";
-import { fieldOf, type ItemForm, type NamedItem } from "./items";
+import { fieldOf, fieldsOf, type ItemForm } from "./items";
 
 // What the settings screen shows, made from the definition (spec 04 §10).
 
@@ -34,26 +34,22 @@ export interface FormSection {
   readonly fields: readonly FormField[];
 }
 
-function fieldsOf(form: ItemForm): readonly NamedItem[] {
-  return form.kind === "group" ? form.fields : [];
-}
-
 function formField(field: {
   readonly path: string;
   readonly form: ItemForm;
   readonly value: unknown;
   readonly invalid: boolean;
 }): FormField[] {
+  // The draft holds only values that passed the item's check (ADR-0003 §8),
+  // so each value is already of its item's kind.
   const { path, form, value, invalid } = field;
   switch (form.kind) {
     case "flag":
-      return typeof value === "boolean" ? [{ kind: "flag", path, value }] : [];
+      return [{ kind: "flag", path, value: value === true }];
     case "integer":
-      return typeof value === "number"
-        ? [{ ...form, path, value, invalid }]
-        : [];
+      return [{ ...form, path, value: Number(value), invalid }];
     case "choice":
-      return typeof value === "string" ? [{ ...form, path, value }] : [];
+      return [{ ...form, path, value: String(value) }];
     case "poems":
     case "layouts":
     case "group":

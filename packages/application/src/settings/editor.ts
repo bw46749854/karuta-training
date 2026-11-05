@@ -7,7 +7,14 @@ import {
 import type { SettingsRepository } from "../ports";
 import { DEFAULT_SETTINGS, SETTINGS, type Settings } from "./definition";
 import { readSettingsDocument, saveSettings } from "./document";
-import { fieldOf, layoutFor, withField, withLayout, type Item } from "./items";
+import {
+  fieldOf,
+  fieldsOf,
+  layoutFor,
+  withField,
+  withLayout,
+  type Item,
+} from "./items";
 
 /** The settings screen's saved values and the draft being edited (ADR-0003 §6). */
 export interface SettingsEditor {
@@ -32,17 +39,15 @@ function definedItem(path: string): {
   readonly name: string;
   readonly item: Item<unknown>;
 } {
-  const [section = "", name = "", ...rest] = path.split(".");
-  const sections = SETTINGS.form.kind === "group" ? SETTINGS.form.fields : [];
-  const form = sections.find((field) => field.name === section)?.item.form;
-  const found =
-    form?.kind === "group"
-      ? form.fields.find((field) => field.name === name)
-      : undefined;
+  const [section, name, ...rest] = path.split(".");
+  const found = fieldsOf(SETTINGS.form)
+    .filter((field) => field.name === section)
+    .flatMap((field) => fieldsOf(field.item.form))
+    .find((field) => field.name === name);
   if (found === undefined || rest.length > 0) {
     throw new RangeError(`No setting edited as a field at ${path}`);
   }
-  return { section, name, item: found.item };
+  return { section: String(section), name: found.name, item: found.item };
 }
 
 // Spec 04 §7.1: only half-width digits make a whole number.

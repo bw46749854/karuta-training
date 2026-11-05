@@ -57,6 +57,11 @@ export function fieldOf(saved: unknown, name: string): unknown {
   return value;
 }
 
+/** The items of a group, in order; none for any other item. */
+export function fieldsOf(form: ItemForm): readonly NamedItem[] {
+  return form.kind === "group" ? form.fields : [];
+}
+
 /** The object with one named value put in, in place of any before. */
 export function withField(
   saved: unknown,
